@@ -29,7 +29,7 @@ export default function Success({ data }: Props) {
     return parts.join("\n");
   };
 
-  const whatsHref = `https://wa.me/5591985091584?text=${encodeURIComponent(buildWhatsMessage())}`;
+  const whatsHref = `https://wa.me/559195091584?text=${encodeURIComponent(buildWhatsMessage())}`;
 
   return (
     <div className="mx-auto max-w-2xl text-center">
