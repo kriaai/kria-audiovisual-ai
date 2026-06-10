@@ -18,7 +18,7 @@ export default function Success({ data }: Props) {
       `Olá Kria! Sou ${data.nome}.`,
       ``,
       `*Nicho:* ${data.nicho}`,
-      `*Serviço:* ${data.servico}`,
+      `*Serviços:* ${data.servicos.join(", ")}`,
     ];
     if (data.checkboxes.length) parts.push(`*Especificações:* ${data.checkboxes.join(", ")}`);
     const extraVals = Object.entries(data.extras).filter(([, v]) => v);
