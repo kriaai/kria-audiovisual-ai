@@ -106,6 +106,27 @@ export default function Step2Niche({ data, update }: Props) {
           })}
         </div>
       </div>
+
+      {/* Outro — campo livre */}
+      <div className={`flex flex-col gap-2 rounded-2xl border-2 p-4 transition sm:flex-row sm:items-center ${
+        isOutroActive ? activeBorder : baseBorder
+      }`}>
+        <label htmlFor="nicho-outro" className="text-sm font-bold uppercase tracking-wider text-primary sm:shrink-0">
+          Outro:
+        </label>
+        <input
+          id="nicho-outro"
+          type="text"
+          value={outroText}
+          onChange={(e) => {
+            const v = e.target.value;
+            setOutroText(v);
+            update("nicho", v.trim() ? v : "");
+          }}
+          placeholder="Digite o seu nicho..."
+          className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-muted-foreground/70"
+        />
+      </div>
     </div>
   );
 }
