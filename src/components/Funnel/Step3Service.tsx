@@ -51,7 +51,7 @@ export default function Step3Service({ data, update }: Props) {
     <div className="space-y-6">
       <header>
         <h2 className="text-2xl font-black tracking-tight md:text-3xl">Qual serviço você procura?</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Selecione o que faz mais sentido para o seu projeto.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Selecione um ou mais serviços que fazem sentido para o seu projeto.</p>
       </header>
 
       {/* Destaque — frame maior */}
