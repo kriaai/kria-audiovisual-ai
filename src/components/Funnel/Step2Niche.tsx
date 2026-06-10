@@ -38,39 +38,63 @@ type Props = {
 };
 
 export default function Step2Niche({ data, update }: Props) {
+  const highlighted = NICHES.filter((n) => n.highlight);
+  const regular = NICHES.filter((n) => !n.highlight);
+
+  const baseBorder = "border-border bg-background hover:border-primary/40";
+  const activeBorder = "border-accent bg-accent/10 text-primary shadow-lg shadow-accent/20";
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <header>
         <h2 className="text-2xl font-black tracking-tight md:text-3xl">Qual é o seu nicho?</h2>
         <p className="mt-1 text-sm text-muted-foreground">Escolha a área que melhor representa o seu negócio.</p>
       </header>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-        {NICHES.map(({ label, icon: Icon, highlight }) => {
-          const active = data.nicho === label;
-          return (
-            <button
-              key={label}
-              type="button"
-              onClick={() => update("nicho", label)}
-              className={`group relative flex flex-col items-center gap-2 rounded-2xl border-2 p-4 text-sm font-semibold transition ${
-                active
-                  ? "border-accent bg-accent/10 text-primary shadow-lg shadow-accent/20"
-                  : highlight
-                    ? "border-accent/40 bg-accent/5 hover:border-accent hover:bg-accent/10"
-                    : "border-border bg-background hover:border-primary/40 hover:bg-primary/5"
-              }`}
-            >
-              {highlight && !active && (
-                <span className="absolute -top-2 right-2 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-white shadow-sm">
-                  Destaque
-                </span>
-              )}
-              <Icon className={`h-6 w-6 ${active ? "text-accent" : "text-primary"}`} />
-              <span>{label}</span>
-            </button>
-          );
-        })}
+      {/* Destaques — frames maiores */}
+      <div>
+        <p className="mb-3 text-xs font-bold uppercase tracking-wider text-accent">Em destaque</p>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
+          {highlighted.map(({ label, icon: Icon }) => {
+            const active = data.nicho === label;
+            return (
+              <button
+                key={label}
+                type="button"
+                onClick={() => update("nicho", label)}
+                className={`flex flex-col items-center justify-center gap-3 rounded-2xl border-2 p-6 text-base font-semibold transition ${
+                  active ? activeBorder : baseBorder
+                }`}
+              >
+                <Icon className={`h-9 w-9 ${active ? "text-accent" : "text-primary"}`} />
+                <span>{label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Demais nichos — frames menores */}
+      <div>
+        <p className="mb-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Outros nichos</p>
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+          {regular.map(({ label, icon: Icon }) => {
+            const active = data.nicho === label;
+            return (
+              <button
+                key={label}
+                type="button"
+                onClick={() => update("nicho", label)}
+                className={`flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 p-3 text-xs font-medium transition ${
+                  active ? activeBorder : baseBorder
+                }`}
+              >
+                <Icon className={`h-5 w-5 ${active ? "text-accent" : "text-primary"}`} />
+                <span>{label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
