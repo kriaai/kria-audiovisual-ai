@@ -35,6 +35,7 @@ const initial: FunnelData = {
   extras: {},
   descricao: "",
   orcamento: 1500,
+  prazo: "",
   observacoes: "",
 };
 
