@@ -65,10 +65,10 @@ export default function Funnel() {
       case 2:
         return !!data.nicho;
       case 3:
-        return !!data.servico;
+        return data.servicos.length > 0;
       case 4: {
-        const cfg = SERVICE_QUESTIONS[data.servico];
-        if (!cfg) return true;
+        const hasAnyCfg = data.servicos.some((s) => SERVICE_QUESTIONS[s]);
+        if (!hasAnyCfg) return true;
         return data.checkboxes.length > 0 && data.descricao.trim().length >= 3;
       }
       case 5:
