@@ -85,11 +85,15 @@ export default function Funnel() {
   const back = () => step > 1 && setStep(step - 1);
 
   const buildEspecificacoes = () => {
-    const cfg = SERVICE_QUESTIONS[data.servico];
     const parts: string[] = [];
     if (data.checkboxes.length) parts.push(`Itens: ${data.checkboxes.join(", ")}`);
-    if (cfg) {
+    const seen = new Set<string>();
+    for (const s of data.servicos) {
+      const cfg = SERVICE_QUESTIONS[s];
+      if (!cfg) continue;
       for (const ex of cfg.extras) {
+        if (seen.has(ex.key)) continue;
+        seen.add(ex.key);
         const v = data.extras[ex.key];
         if (v) parts.push(`${ex.label}: ${v}`);
       }
@@ -100,14 +104,15 @@ export default function Funnel() {
 
   const submit = async () => {
     setSubmitting(true);
+    const servicosStr = data.servicos.join(", ");
     const payload = {
-      _subject: `Nova proposta — ${data.nome} (${data.servico})`,
+      _subject: `Nova proposta — ${data.nome} (${servicosStr})`,
       _replyto: data.email,
       nome: data.nome,
       whatsapp: data.whatsapp,
       email: data.email,
       nicho: data.nicho,
-      servico: data.servico,
+      servico: servicosStr,
       especificacoes: buildEspecificacoes(),
       orcamento: `R$ ${data.orcamento.toLocaleString("pt-BR")}`,
       extras: data.observacoes,
