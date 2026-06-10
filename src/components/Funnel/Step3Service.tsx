@@ -34,8 +34,10 @@ type Props = {
 };
 
 export default function Step3Service({ data, update }: Props) {
-  const select = (label: string) => {
-    update("servico", label);
+  const toggle = (label: string) => {
+    const has = data.servicos.includes(label);
+    const next = has ? data.servicos.filter((s) => s !== label) : [...data.servicos, label];
+    update("servicos", next);
     update("checkboxes", []);
     update("extras", {});
     update("descricao", "");
@@ -43,7 +45,7 @@ export default function Step3Service({ data, update }: Props) {
 
   const baseBorder = "border-border bg-background hover:border-primary/40 hover:bg-primary/5";
   const activeBorder = "border-accent bg-accent/10 shadow-lg shadow-accent/20";
-  const featuredActive = data.servico === FEATURED.label;
+  const featuredActive = data.servicos.includes(FEATURED.label);
 
   return (
     <div className="space-y-6">
