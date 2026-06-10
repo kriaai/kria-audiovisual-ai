@@ -16,7 +16,7 @@ export type FunnelData = {
   whatsapp: string;
   email: string;
   nicho: string;
-  servico: string;
+  servicos: string[];
   checkboxes: string[];
   extras: Record<string, string>;
   descricao: string;
@@ -29,7 +29,7 @@ const initial: FunnelData = {
   whatsapp: "",
   email: "",
   nicho: "",
-  servico: "",
+  servicos: [],
   checkboxes: [],
   extras: {},
   descricao: "",
