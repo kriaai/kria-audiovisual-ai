@@ -117,6 +117,7 @@ export default function Funnel() {
       servico: servicosStr,
       especificacoes: buildEspecificacoes(),
       orcamento: `R$ ${data.orcamento.toLocaleString("pt-BR")}`,
+      prazo: data.prazo,
       extras: data.observacoes,
     };
     try {
