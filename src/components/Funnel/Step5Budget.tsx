@@ -37,12 +37,41 @@ export default function Step5Budget({ data, update }: Props) {
       </div>
 
       <div>
+        <Label>Qual o prazo / urgência?</Label>
+        <div className="mt-2 grid grid-cols-2 gap-2 md:grid-cols-4">
+          {[
+            { v: "urgente", t: "Urgente", s: "até 3 dias" },
+            { v: "rapido", t: "Rápido", s: "até 1 semana" },
+            { v: "normal", t: "Normal", s: "2 a 4 semanas" },
+            { v: "flexivel", t: "Flexível", s: "sem pressa" },
+          ].map((o) => {
+            const active = data.prazo === o.v;
+            return (
+              <button
+                key={o.v}
+                type="button"
+                onClick={() => update("prazo", o.v)}
+                className={`rounded-xl border-2 p-3 text-left transition ${
+                  active
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:border-primary/40"
+                }`}
+              >
+                <div className="text-sm font-bold">{o.t}</div>
+                <div className="text-xs text-muted-foreground">{o.s}</div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div>
         <Label htmlFor="observacoes">Informações extras (opcional)</Label>
         <Textarea
           id="observacoes"
           value={data.observacoes}
           onChange={(e) => update("observacoes", e.target.value)}
-          placeholder="Prazo, urgência, qualquer detalhe importante..."
+          placeholder="Qualquer detalhe importante..."
           className="mt-1.5 min-h-28"
           maxLength={1500}
         />
