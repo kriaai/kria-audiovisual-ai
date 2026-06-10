@@ -1,4 +1,5 @@
-import { Sparkles, Camera, Video, Palette, Bot, Globe, Scissors } from "lucide-react";
+import { Sparkles, Camera, Video, Palette, Bot, Globe, Scissors, CalendarCheck } from "lucide-react";
+import kriaHero from "@/assets/kria-hero.png.asset.json";
 
 const pills = [
   { icon: Video, label: "Filmmaker" },
@@ -71,21 +72,47 @@ export default function Hero() {
             </button>
           </div>
 
-          {/* placeholder de imagem */}
+          {/* Foto da Kria + CTA de reunião */}
           <div className="relative mx-auto w-full max-w-md">
             <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-accent/40 to-fuchsia-400/30 blur-2xl" />
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-gradient-to-br from-white/10 to-white/5 ring-1 ring-white/15 backdrop-blur-sm">
-              <div className="absolute inset-0 grid place-items-center text-white/40">
-                <div className="text-center">
-                  <Camera className="mx-auto h-16 w-16" />
-                  <p className="mt-3 text-sm">Sua imagem aqui</p>
-                </div>
-              </div>
-              <div className="absolute bottom-4 left-4 right-4 rounded-2xl bg-black/30 p-4 backdrop-blur-md ring-1 ring-white/10">
-                <div className="text-xs font-semibold text-accent">EM DESTAQUE</div>
-                <div className="text-sm font-bold text-white">Audiovisual + IA</div>
+            <div className="relative aspect-[3/4] overflow-hidden rounded-[2rem] ring-1 ring-white/15 shadow-2xl">
+              <img
+                src={kriaHero.url}
+                alt="Kria — CEO da Kria AI Audiovisual"
+                className="h-full w-full object-cover"
+                loading="eager"
+              />
+              <div className="absolute bottom-4 left-4 right-4 rounded-2xl bg-black/40 p-4 backdrop-blur-md ring-1 ring-white/10">
+                <div className="text-[10px] font-semibold tracking-[0.25em] text-accent">CEO</div>
+                <div className="text-sm font-bold text-white">Olá, eu sou a Kria</div>
+                <div className="text-xs text-white/70">Liderança. Inovação. Conexão. Resultado.</div>
               </div>
             </div>
+
+            <a
+              href={`https://wa.me/5591985091584?text=${encodeURIComponent(
+                "Olá Kria! Quero agendar uma reunião (R$50) para conversar pessoalmente ou online sobre meu projeto.",
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative mt-5 flex w-full items-center justify-between gap-3 rounded-2xl bg-white px-5 py-4 text-left shadow-xl transition hover:scale-[1.01] hover:shadow-2xl"
+            >
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent/15 text-accent">
+                  <CalendarCheck className="h-5 w-5" />
+                </span>
+                <div>
+                  <div className="text-sm font-bold text-primary">Falar direto com a Kria</div>
+                  <div className="text-xs text-neutral-600">Reunião online ou presencial</div>
+                </div>
+              </div>
+              <span className="rounded-full bg-primary px-3 py-1.5 text-xs font-bold text-white">
+                R$ 50
+              </span>
+            </a>
+            <p className="mt-2 text-center text-[11px] text-white/60">
+              Prefere pular o formulário? Agende uma conversa direta com a Kria.
+            </p>
           </div>
         </div>
       </div>
