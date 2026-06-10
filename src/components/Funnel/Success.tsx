@@ -13,20 +13,62 @@ export default function Success({ data }: Props) {
     { label: fmt(data.orcamento), cls: "bg-emerald-100 text-emerald-700" },
   ];
 
+  const prazoLabel: Record<string, string> = {
+    urgente: "urgente (até 3 dias)",
+    rapido: "rápido (até 1 semana)",
+    normal: "normal (2 a 4 semanas)",
+    flexivel: "flexível (sem pressa)",
+  };
+
   const buildWhatsMessage = () => {
-    const parts: string[] = [
-      `Olá Kria! Sou ${data.nome}.`,
-      ``,
-      `*Nicho:* ${data.nicho}`,
-      `*Serviços:* ${data.servicos.join(", ")}`,
+    const primeiroNome = data.nome.split(" ")[0];
+    const servicosBullets = data.servicos.map((s) => `• ${s}`).join("\n");
+    const dores = data.checkboxes.length
+      ? data.checkboxes.map((c) => `• ${c.replace(/^[^:]+:\s*/, "")}`).join("\n")
+      : "• Necessidades a serem detalhadas em conversa";
+
+    const objetivo = data.descricao?.trim()
+      ? data.descricao.trim()
+      : `Fortalecer presença e resultados no segmento de ${data.nicho.toLowerCase()} com apoio das soluções da Kria AI.`;
+
+    const resumoDiagnostico = `${primeiroNome} atua no segmento de ${data.nicho.toLowerCase()} e busca evoluir com ${data.servicos.join(", ").toLowerCase()}.`;
+
+    const linhas = [
+      "Olá, equipe Kria AI.",
+      "",
+      "Novo lead recebido pelo site.",
+      "",
+      `*Nome:* ${data.nome}`,
+      `*WhatsApp:* ${data.whatsapp}`,
+      `*E-mail:* ${data.email}`,
+      "",
+      "*Resumo do diagnóstico:*",
+      resumoDiagnostico,
+      "",
+      "*Principais necessidades identificadas:*",
+      dores,
+      "",
+      "*Objetivo principal:*",
+      objetivo,
+      "",
+      "*Solução recomendada pela Kria AI:*",
+      servicosBullets,
+      "",
+      `*Investimento estimado:* ${fmt(data.orcamento)}`,
     ];
-    if (data.checkboxes.length) parts.push(`*Especificações:* ${data.checkboxes.join(", ")}`);
-    const extraVals = Object.entries(data.extras).filter(([, v]) => v);
-    for (const [k, v] of extraVals) parts.push(`*${k}:* ${v}`);
-    if (data.descricao) parts.push(`*Descrição:* ${data.descricao}`);
-    parts.push(`*Orçamento:* ${fmt(data.orcamento)}`);
-    if (data.observacoes) parts.push(`*Observações:* ${data.observacoes}`);
-    return parts.join("\n");
+
+    if (data.prazo) linhas.push(`*Prazo:* ${prazoLabel[data.prazo] ?? data.prazo}`);
+    if (data.observacoes?.trim()) {
+      linhas.push("", `*Observações:* ${data.observacoes.trim()}`);
+    }
+
+    linhas.push(
+      "",
+      "*Mensagem final:*",
+      "Gostaria de conversar sobre uma proposta personalizada para meu projeto."
+    );
+
+    return linhas.join("\n");
   };
 
   const whatsHref = `https://wa.me/559195091584?text=${encodeURIComponent(buildWhatsMessage())}`;
