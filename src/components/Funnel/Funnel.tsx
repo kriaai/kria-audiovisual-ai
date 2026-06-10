@@ -21,6 +21,7 @@ export type FunnelData = {
   extras: Record<string, string>;
   descricao: string;
   orcamento: number;
+  prazo: string;
   observacoes: string;
 };
 
@@ -34,6 +35,7 @@ const initial: FunnelData = {
   extras: {},
   descricao: "",
   orcamento: 1500,
+  prazo: "",
   observacoes: "",
 };
 
@@ -115,6 +117,7 @@ export default function Funnel() {
       servico: servicosStr,
       especificacoes: buildEspecificacoes(),
       orcamento: `R$ ${data.orcamento.toLocaleString("pt-BR")}`,
+      prazo: data.prazo,
       extras: data.observacoes,
     };
     try {
