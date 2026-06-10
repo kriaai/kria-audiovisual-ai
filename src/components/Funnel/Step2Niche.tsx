@@ -1,10 +1,12 @@
+import { useState, useEffect } from "react";
 import {
   Landmark, Star, HeartPulse, Cpu, Music, Megaphone, Film, Calendar,
   Store, Sparkles, GraduationCap, Home, UtensilsCrossed,
-  Briefcase, Mic, Truck, Clapperboard, MoreHorizontal,
+  Briefcase, Mic, Truck, Clapperboard,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { FunnelData } from "./Funnel";
+
 
 const NICHES: { label: string; icon: LucideIcon; highlight?: boolean }[] = [
   // Nichos em destaque
@@ -29,7 +31,6 @@ const NICHES: { label: string; icon: LucideIcon; highlight?: boolean }[] = [
   { label: "Conteúdo", icon: Mic },
   { label: "Logística", icon: Truck },
   { label: "Entretenimento", icon: Clapperboard },
-  { label: "Outro", icon: MoreHorizontal },
 ];
 
 type Props = {
@@ -41,8 +42,17 @@ export default function Step2Niche({ data, update }: Props) {
   const highlighted = NICHES.filter((n) => n.highlight);
   const regular = NICHES.filter((n) => !n.highlight);
 
+  const knownLabels = NICHES.map((n) => n.label);
+  const isOutroActive = !!data.nicho && !knownLabels.includes(data.nicho);
+  const [outroText, setOutroText] = useState(isOutroActive ? data.nicho : "");
+
+  useEffect(() => {
+    if (isOutroActive) setOutroText(data.nicho);
+  }, [data.nicho, isOutroActive]);
+
   const baseBorder = "border-border bg-background hover:border-primary/40";
   const activeBorder = "border-accent bg-accent/10 text-primary shadow-lg shadow-accent/20";
+
 
   return (
     <div className="space-y-8">
@@ -95,6 +105,27 @@ export default function Step2Niche({ data, update }: Props) {
             );
           })}
         </div>
+      </div>
+
+      {/* Outro — campo livre */}
+      <div className={`flex flex-col gap-2 rounded-2xl border-2 p-4 transition sm:flex-row sm:items-center ${
+        isOutroActive ? activeBorder : baseBorder
+      }`}>
+        <label htmlFor="nicho-outro" className="text-sm font-bold uppercase tracking-wider text-primary sm:shrink-0">
+          Outro:
+        </label>
+        <input
+          id="nicho-outro"
+          type="text"
+          value={outroText}
+          onChange={(e) => {
+            const v = e.target.value;
+            setOutroText(v);
+            update("nicho", v.trim() ? v : "");
+          }}
+          placeholder="Digite o seu nicho..."
+          className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-muted-foreground/70"
+        />
       </div>
     </div>
   );
