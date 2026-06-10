@@ -57,7 +57,7 @@ export default function Step3Service({ data, update }: Props) {
       {/* Destaque — frame maior */}
       <button
         type="button"
-        onClick={() => select(FEATURED.label)}
+        onClick={() => toggle(FEATURED.label)}
         className={`relative flex w-full items-center gap-5 overflow-hidden rounded-3xl border-2 p-6 text-left transition md:p-7 ${
           featuredActive ? activeBorder : baseBorder
         }`}
