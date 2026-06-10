@@ -11,8 +11,10 @@ type Props = {
 };
 
 export default function Step4Dynamic({ data, update }: Props) {
-  const cfg = SERVICE_QUESTIONS[data.servico];
-  if (!cfg) return <p className="text-muted-foreground">Volte e selecione um serviço.</p>;
+  const services = data.servicos.filter((s) => SERVICE_QUESTIONS[s]);
+  if (services.length === 0) {
+    return <p className="text-muted-foreground">Volte e selecione ao menos um serviço.</p>;
+  }
 
   const toggle = (item: string) => {
     const has = data.checkboxes.includes(item);
@@ -21,36 +23,55 @@ export default function Step4Dynamic({ data, update }: Props) {
 
   const setExtra = (key: string, val: string) => update("extras", { ...data.extras, [key]: val });
 
+  // Deduplicate extras across selected services by key
+  const seenExtras = new Set<string>();
+  const extras = services.flatMap((s) =>
+    SERVICE_QUESTIONS[s].extras.filter((ex) => {
+      if (seenExtras.has(ex.key)) return false;
+      seenExtras.add(ex.key);
+      return true;
+    })
+  );
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <header>
         <h2 className="text-2xl font-black tracking-tight md:text-3xl">
-          Sobre o serviço de <span className="text-primary">{data.servico}</span>
+          Sobre {services.length > 1 ? "os serviços" : "o serviço"}{" "}
+          <span className="text-primary">{services.join(", ")}</span>
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">Marque tudo que se aplica e dê detalhes para uma proposta certeira.</p>
       </header>
 
-      <div>
-        <Label className="mb-3 block text-sm font-semibold">{cfg.checkboxLabel}</Label>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          {cfg.checkboxes.map((item) => {
-            const active = data.checkboxes.includes(item);
-            return (
-              <label
-                key={item}
-                className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 px-4 py-3 text-sm font-medium transition ${
-                  active ? "border-accent bg-accent/10" : "border-border bg-background hover:border-primary/40"
-                }`}
-              >
-                <Checkbox checked={active} onCheckedChange={() => toggle(item)} />
-                {item}
-              </label>
-            );
-          })}
-        </div>
-      </div>
+      {services.map((s) => {
+        const cfg = SERVICE_QUESTIONS[s];
+        return (
+          <div key={s} className="space-y-3">
+            <Label className="block text-sm font-bold text-primary">
+              {s} — {cfg.checkboxLabel}
+            </Label>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {cfg.checkboxes.map((item) => {
+                const key = `${s}: ${item}`;
+                const active = data.checkboxes.includes(key);
+                return (
+                  <label
+                    key={key}
+                    className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 px-4 py-3 text-sm font-medium transition ${
+                      active ? "border-accent bg-accent/10" : "border-border bg-background hover:border-primary/40"
+                    }`}
+                  >
+                    <Checkbox checked={active} onCheckedChange={() => toggle(key)} />
+                    {item}
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
 
-      {cfg.extras.map((ex) => (
+      {extras.map((ex) => (
         <div key={ex.key}>
           <Label htmlFor={ex.key}>{ex.label}</Label>
           <Input
@@ -65,12 +86,12 @@ export default function Step4Dynamic({ data, update }: Props) {
       ))}
 
       <div>
-        <Label htmlFor="descricao">{cfg.description.label}</Label>
+        <Label htmlFor="descricao">Descreva o seu projeto</Label>
         <Textarea
           id="descricao"
           value={data.descricao}
           onChange={(e) => update("descricao", e.target.value)}
-          placeholder={cfg.description.placeholder}
+          placeholder="Conte mais sobre o que você precisa, referências, prazos..."
           className="mt-1.5 min-h-32"
           maxLength={1500}
         />

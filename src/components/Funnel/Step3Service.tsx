@@ -34,8 +34,10 @@ type Props = {
 };
 
 export default function Step3Service({ data, update }: Props) {
-  const select = (label: string) => {
-    update("servico", label);
+  const toggle = (label: string) => {
+    const has = data.servicos.includes(label);
+    const next = has ? data.servicos.filter((s) => s !== label) : [...data.servicos, label];
+    update("servicos", next);
     update("checkboxes", []);
     update("extras", {});
     update("descricao", "");
@@ -43,19 +45,19 @@ export default function Step3Service({ data, update }: Props) {
 
   const baseBorder = "border-border bg-background hover:border-primary/40 hover:bg-primary/5";
   const activeBorder = "border-accent bg-accent/10 shadow-lg shadow-accent/20";
-  const featuredActive = data.servico === FEATURED.label;
+  const featuredActive = data.servicos.includes(FEATURED.label);
 
   return (
     <div className="space-y-6">
       <header>
         <h2 className="text-2xl font-black tracking-tight md:text-3xl">Qual serviço você procura?</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Selecione o que faz mais sentido para o seu projeto.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Selecione um ou mais serviços que fazem sentido para o seu projeto.</p>
       </header>
 
       {/* Destaque — frame maior */}
       <button
         type="button"
-        onClick={() => select(FEATURED.label)}
+        onClick={() => toggle(FEATURED.label)}
         className={`relative flex w-full items-center gap-5 overflow-hidden rounded-3xl border-2 p-6 text-left transition md:p-7 ${
           featuredActive ? activeBorder : baseBorder
         }`}
@@ -74,12 +76,12 @@ export default function Step3Service({ data, update }: Props) {
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {SERVICES.map(({ label, icon: Icon, desc }) => {
-          const active = data.servico === label;
+          const active = data.servicos.includes(label);
           return (
             <button
               key={label}
               type="button"
-              onClick={() => select(label)}
+              onClick={() => toggle(label)}
               className={`group flex items-start gap-3 rounded-2xl border-2 p-4 text-left transition ${
                 active ? activeBorder : baseBorder
               }`}
