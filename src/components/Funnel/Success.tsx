@@ -3,6 +3,71 @@ import type { FunnelData } from "./Funnel";
 
 type Props = { data: FunnelData };
 
+const PRAZO_LABEL: Record<string, string> = {
+  urgente: "urgente (até 3 dias)",
+  rapido: "rápido (até 1 semana)",
+  normal: "normal (2 a 4 semanas)",
+  flexivel: "flexível (sem pressa)",
+};
+
+const WHATS_NUMBER = "559195091584";
+
+function buildResumoEstrategico(data: FunnelData) {
+  const primeiroNome = data.nome.split(" ")[0] || data.nome;
+  const segmento = data.nicho?.toLowerCase() || "seu segmento";
+  const servicos = data.servicos.length
+    ? data.servicos.join(", ").toLowerCase()
+    : "as soluções da Kria AI";
+  const prazoTxt = data.prazo ? ` com prazo ${PRAZO_LABEL[data.prazo] ?? data.prazo}` : "";
+  return `${primeiroNome} atua no segmento de ${segmento} e busca avançar com ${servicos}${prazoTxt}. A Kria AI recomenda um plano sob medida combinando estratégia, produção e automação para acelerar os resultados.`;
+}
+
+export function buildWhatsMessage(data: FunnelData) {
+  const fmt = (n: number) => `R$ ${n.toLocaleString("pt-BR")}`;
+
+  const segmento = data.nicho || "—";
+  const objetivo = data.descricao?.trim()
+    ? data.descricao.trim()
+    : `Evoluir no segmento de ${segmento.toLowerCase()} com apoio da Kria AI.`;
+
+  const dores = data.checkboxes.length
+    ? data.checkboxes.map((c) => `  - ${c.replace(/^[^:]+:\s*/, "")}`).join("\n")
+    : "  - A detalhar em conversa";
+
+  const servicos = data.servicos.length
+    ? data.servicos.map((s) => `  - ${s}`).join("\n")
+    : "  - A definir";
+
+  const valor = fmt(data.orcamento);
+  const resumo = buildResumoEstrategico(data);
+
+  return [
+    "Olá, equipe Kria AI.",
+    "",
+    "Acabei de concluir o diagnóstico estratégico do site.",
+    "",
+    `Meu nome é: ${data.nome}`,
+    "",
+    "Resumo do meu projeto:",
+    "",
+    `• Segmento: ${segmento}`,
+    `• Objetivo principal: ${objetivo}`,
+    "• Principais desafios:",
+    dores,
+    "• Serviços de interesse:",
+    servicos,
+    `• Faixa de investimento: ${valor}`,
+    "",
+    "Resumo estratégico:",
+    "",
+    resumo,
+    "",
+    "Mensagem final:",
+    "",
+    "Gostaria de receber uma proposta personalizada para meu negócio.",
+  ].join("\n");
+}
+
 export default function Success({ data }: Props) {
   const fmt = (n: number) => `R$ ${n.toLocaleString("pt-BR")}`;
 
@@ -13,65 +78,11 @@ export default function Success({ data }: Props) {
     { label: fmt(data.orcamento), cls: "bg-emerald-100 text-emerald-700" },
   ];
 
-  const prazoLabel: Record<string, string> = {
-    urgente: "urgente (até 3 dias)",
-    rapido: "rápido (até 1 semana)",
-    normal: "normal (2 a 4 semanas)",
-    flexivel: "flexível (sem pressa)",
+  const openWhats = () => {
+    const mensagem = buildWhatsMessage(data);
+    const url = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(mensagem)}`;
+    window.open(url, "_blank");
   };
-
-  const buildWhatsMessage = () => {
-    const primeiroNome = data.nome.split(" ")[0];
-    const servicosBullets = data.servicos.map((s) => `• ${s}`).join("\n");
-    const dores = data.checkboxes.length
-      ? data.checkboxes.map((c) => `• ${c.replace(/^[^:]+:\s*/, "")}`).join("\n")
-      : "• Necessidades a serem detalhadas em conversa";
-
-    const objetivo = data.descricao?.trim()
-      ? data.descricao.trim()
-      : `Fortalecer presença e resultados no segmento de ${data.nicho.toLowerCase()} com apoio das soluções da Kria AI.`;
-
-    const resumoDiagnostico = `${primeiroNome} atua no segmento de ${data.nicho.toLowerCase()} e busca evoluir com ${data.servicos.join(", ").toLowerCase()}.`;
-
-    const linhas = [
-      "Olá, equipe Kria AI.",
-      "",
-      "Novo lead recebido pelo site.",
-      "",
-      `*Nome:* ${data.nome}`,
-      `*WhatsApp:* ${data.whatsapp}`,
-      `*E-mail:* ${data.email}`,
-      "",
-      "*Resumo do diagnóstico:*",
-      resumoDiagnostico,
-      "",
-      "*Principais necessidades identificadas:*",
-      dores,
-      "",
-      "*Objetivo principal:*",
-      objetivo,
-      "",
-      "*Solução recomendada pela Kria AI:*",
-      servicosBullets,
-      "",
-      `*Investimento estimado:* ${fmt(data.orcamento)}`,
-    ];
-
-    if (data.prazo) linhas.push(`*Prazo:* ${prazoLabel[data.prazo] ?? data.prazo}`);
-    if (data.observacoes?.trim()) {
-      linhas.push("", `*Observações:* ${data.observacoes.trim()}`);
-    }
-
-    linhas.push(
-      "",
-      "*Mensagem final:*",
-      "Gostaria de conversar sobre uma proposta personalizada para meu projeto."
-    );
-
-    return linhas.join("\n");
-  };
-
-  const whatsHref = `https://wa.me/559195091584?text=${encodeURIComponent(buildWhatsMessage())}`;
 
   return (
     <div className="mx-auto max-w-2xl text-center">
@@ -92,15 +103,14 @@ export default function Success({ data }: Props) {
         ))}
       </div>
 
-      <a
-        href={whatsHref}
-        target="_blank"
-        rel="noopener noreferrer"
+      <button
+        type="button"
+        onClick={openWhats}
         className="mt-10 inline-flex items-center gap-2 rounded-full bg-emerald-500 px-7 py-4 text-base font-bold text-white shadow-xl shadow-emerald-500/30 transition hover:scale-[1.02] hover:bg-emerald-600"
       >
         <MessageCircle className="h-5 w-5" />
         Abrir WhatsApp com resumo
-      </a>
+      </button>
     </div>
   );
 }
