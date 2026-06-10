@@ -21,6 +21,7 @@ export type FunnelData = {
   extras: Record<string, string>;
   descricao: string;
   orcamento: number;
+  prazo: string;
   observacoes: string;
 };
 
