@@ -42,8 +42,17 @@ export default function Step2Niche({ data, update }: Props) {
   const highlighted = NICHES.filter((n) => n.highlight);
   const regular = NICHES.filter((n) => !n.highlight);
 
+  const knownLabels = NICHES.map((n) => n.label);
+  const isOutroActive = !!data.nicho && !knownLabels.includes(data.nicho);
+  const [outroText, setOutroText] = useState(isOutroActive ? data.nicho : "");
+
+  useEffect(() => {
+    if (isOutroActive) setOutroText(data.nicho);
+  }, [data.nicho, isOutroActive]);
+
   const baseBorder = "border-border bg-background hover:border-primary/40";
   const activeBorder = "border-accent bg-accent/10 text-primary shadow-lg shadow-accent/20";
+
 
   return (
     <div className="space-y-8">
