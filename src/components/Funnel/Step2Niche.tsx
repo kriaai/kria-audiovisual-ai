@@ -1,10 +1,12 @@
+import { useState, useEffect } from "react";
 import {
   Landmark, Star, HeartPulse, Cpu, Music, Megaphone, Film, Calendar,
   Store, Sparkles, GraduationCap, Home, UtensilsCrossed,
-  Briefcase, Mic, Truck, Clapperboard, MoreHorizontal,
+  Briefcase, Mic, Truck, Clapperboard,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { FunnelData } from "./Funnel";
+
 
 const NICHES: { label: string; icon: LucideIcon; highlight?: boolean }[] = [
   // Nichos em destaque
