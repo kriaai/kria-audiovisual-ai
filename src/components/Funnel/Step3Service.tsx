@@ -76,12 +76,12 @@ export default function Step3Service({ data, update }: Props) {
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {SERVICES.map(({ label, icon: Icon, desc }) => {
-          const active = data.servico === label;
+          const active = data.servicos.includes(label);
           return (
             <button
               key={label}
               type="button"
-              onClick={() => select(label)}
+              onClick={() => toggle(label)}
               className={`group flex items-start gap-3 rounded-2xl border-2 p-4 text-left transition ${
                 active ? activeBorder : baseBorder
               }`}
