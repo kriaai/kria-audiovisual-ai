@@ -8,7 +8,7 @@ export default function Success({ data }: Props) {
 
   const tags: { label: string; cls: string }[] = [
     { label: data.nicho, cls: "bg-primary/10 text-primary" },
-    { label: data.servico, cls: "bg-accent/15 text-accent" },
+    ...data.servicos.map((s) => ({ label: s, cls: "bg-accent/15 text-accent" })),
     ...data.checkboxes.map((c) => ({ label: c, cls: "bg-fuchsia-100 text-fuchsia-700" })),
     { label: fmt(data.orcamento), cls: "bg-emerald-100 text-emerald-700" },
   ];
