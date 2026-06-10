@@ -47,15 +47,18 @@ export default function Funnel() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const partialSent = useRef(false);
 
+  // Apenas role para a seção quando aparece a tela de Sucesso
   useEffect(() => {
-    if (sectionRef.current) {
+    if (done && sectionRef.current) {
       sectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  }, [step, done]);
+  }, [done]);
 
   const update = <K extends keyof FunnelData>(key: K, value: FunnelData[K]) =>
     setData((d) => ({ ...d, [key]: value }));
+
 
   const isEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
   const isWhats = (w: string) => /\(?\d{2}\)?[\s-]?\d{4,5}-?\d{4}/.test(w.replace(/\s/g, ""));
@@ -82,9 +85,26 @@ export default function Funnel() {
 
   const next = () => {
     if (!canContinue) return;
+    // Lead parcial silencioso após Etapa 1
+    if (step === 1 && !partialSent.current) {
+      partialSent.current = true;
+      fetch("https://formspree.io/f/xkoabjow", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          _subject: `Lead parcial — ${data.nome}`,
+          _replyto: data.email,
+          tipo: "parcial",
+          nome: data.nome,
+          whatsapp: data.whatsapp,
+          email: data.email,
+        }),
+      }).catch(() => {});
+    }
     if (step < TOTAL) setStep(step + 1);
   };
   const back = () => step > 1 && setStep(step - 1);
+
 
   const buildEspecificacoes = () => {
     const parts: string[] = [];

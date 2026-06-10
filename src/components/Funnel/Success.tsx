@@ -14,62 +14,65 @@ const WHATS_NUMBER = "559195091584";
 
 function buildResumoEstrategico(data: FunnelData) {
   const primeiroNome = data.nome.split(" ")[0] || data.nome;
-  const segmento = data.nicho?.toLowerCase() || "seu segmento";
+  const segmento = data.nicho?.toLowerCase() || "meu segmento";
   const servicos = data.servicos.length
     ? data.servicos.join(", ").toLowerCase()
     : "as soluções da Kria AI";
-  const prazoTxt = data.prazo ? ` com prazo ${PRAZO_LABEL[data.prazo] ?? data.prazo}` : "";
-  return `${primeiroNome} atua no segmento de ${segmento} e busca avançar com ${servicos}${prazoTxt}. A Kria AI recomenda um plano sob medida combinando estratégia, produção e automação para acelerar os resultados.`;
+  return `Acredito que preciso estruturar melhor minha presença com ${servicos}, focando em ${segmento}, para crescer com mais consistência e resultado.`;
 }
 
 export function buildWhatsMessage(data: FunnelData) {
   const fmt = (n: number) => `R$ ${n.toLocaleString("pt-BR")}`;
-
+  const primeiroNome = data.nome.split(" ")[0] || data.nome;
   const segmento = data.nicho || "—";
   const objetivo = data.descricao?.trim()
     ? data.descricao.trim()
     : `Evoluir no segmento de ${segmento.toLowerCase()} com apoio da Kria AI.`;
 
   const dores = data.checkboxes.length
-    ? data.checkboxes.map((c) => `  - ${c.replace(/^[^:]+:\s*/, "")}`).join("\n")
-    : "  - A detalhar em conversa";
+    ? data.checkboxes.map((c) => `• ${c.replace(/^[^:]+:\s*/, "")}`).join("\n")
+    : "• A detalhar em conversa";
 
   const servicos = data.servicos.length
-    ? data.servicos.map((s) => `  - ${s}`).join("\n")
-    : "  - A definir";
+    ? data.servicos.map((s) => `• ${s}`).join("\n")
+    : "• A definir";
 
+  const prazoTxt = data.prazo ? PRAZO_LABEL[data.prazo] ?? data.prazo : "a combinar";
   const valor = fmt(data.orcamento);
   const resumo = buildResumoEstrategico(data);
 
   return [
-    "Olá, equipe Kria AI.",
+    `Olá, equipe Kria AI! 👋`,
     "",
-    "Acabei de concluir o diagnóstico estratégico do site.",
+    `Meu nome é *${primeiroNome}* e acabei de fazer o diagnóstico no site.`,
     "",
-    `Meu nome é: ${data.nome}`,
+    `👤 *Sobre mim*`,
+    `• Nicho: ${segmento}`,
+    `• WhatsApp: ${data.whatsapp}`,
+    `• E-mail: ${data.email}`,
     "",
-    "Resumo do meu projeto:",
+    `🎯 *Meu objetivo*`,
+    objetivo,
     "",
-    `• Segmento: ${segmento}`,
-    `• Objetivo principal: ${objetivo}`,
-    "• Principais desafios:",
+    `⚠️ *Principais desafios*`,
     dores,
-    "• Serviços de interesse:",
+    "",
+    `💡 *Tenho interesse em*`,
     servicos,
-    `• Faixa de investimento: ${valor}`,
     "",
-    "Resumo estratégico:",
+    `⏱️ *Prazo ideal*: ${prazoTxt}`,
+    `💰 *Investimento*: ${valor}`,
     "",
+    `📌 *Resumo*`,
     resumo,
     "",
-    "Mensagem final:",
-    "",
-    "Gostaria de receber uma proposta personalizada para meu negócio.",
+    `Gostaria de receber uma proposta personalizada. 🚀`,
   ].join("\n");
 }
 
 export default function Success({ data }: Props) {
   const fmt = (n: number) => `R$ ${n.toLocaleString("pt-BR")}`;
+  const primeiroNome = data.nome.split(" ")[0] || data.nome;
 
   const tags: { label: string; cls: string }[] = [
     { label: data.nicho, cls: "bg-primary/10 text-primary" },
@@ -78,8 +81,9 @@ export default function Success({ data }: Props) {
     { label: fmt(data.orcamento), cls: "bg-emerald-100 text-emerald-700" },
   ];
 
+  const mensagem = buildWhatsMessage(data);
+
   const openWhats = () => {
-    const mensagem = buildWhatsMessage(data);
     const url = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(mensagem)}`;
     window.open(url, "_blank");
   };
@@ -90,9 +94,9 @@ export default function Success({ data }: Props) {
         <Check className="h-10 w-10" strokeWidth={3} />
       </div>
 
-      <h2 className="mt-6 text-3xl font-black tracking-tight md:text-4xl">Proposta enviada!</h2>
+      <h2 className="mt-6 text-3xl font-black tracking-tight md:text-4xl">Diagnóstico pronto!</h2>
       <p className="mt-2 text-muted-foreground">
-        Recebemos suas respostas, {data.nome.split(" ")[0]}. Agora é só falar com a Kria pelo WhatsApp.
+        Com base nas suas respostas, {primeiroNome}, identificamos as maiores oportunidades para acelerar seu crescimento.
       </p>
 
       <div className="mt-8 flex flex-wrap justify-center gap-2">
@@ -103,10 +107,23 @@ export default function Success({ data }: Props) {
         ))}
       </div>
 
+      <div className="mt-8 rounded-2xl border bg-muted/40 p-5 text-left">
+        <div className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          Prévia da sua mensagem
+        </div>
+        <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-foreground">
+{mensagem}
+        </pre>
+      </div>
+
+      <p className="mt-6 text-sm text-muted-foreground">
+        Esta recomendação foi gerada especificamente para o seu cenário. Quanto antes começar, maiores as chances de acelerar resultados.
+      </p>
+
       <button
         type="button"
         onClick={openWhats}
-        className="mt-10 inline-flex items-center gap-2 rounded-full bg-emerald-500 px-7 py-4 text-base font-bold text-white shadow-xl shadow-emerald-500/30 transition hover:scale-[1.02] hover:bg-emerald-600"
+        className="mt-6 inline-flex items-center gap-2 rounded-full bg-emerald-500 px-7 py-4 text-base font-bold text-white shadow-xl shadow-emerald-500/30 transition hover:scale-[1.02] hover:bg-emerald-600"
       >
         <MessageCircle className="h-5 w-5" />
         Abrir WhatsApp com resumo
