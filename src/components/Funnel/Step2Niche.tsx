@@ -31,7 +31,6 @@ const NICHES: { label: string; icon: LucideIcon; highlight?: boolean }[] = [
   { label: "Conteúdo", icon: Mic },
   { label: "Logística", icon: Truck },
   { label: "Entretenimento", icon: Clapperboard },
-  { label: "Outro", icon: MoreHorizontal },
 ];
 
 type Props = {
