@@ -90,7 +90,7 @@ export default function Hero() {
             </div>
 
             <a
-              href={`https://wa.me/5591985091584?text=${encodeURIComponent(
+              href={`https://wa.me/559195091584?text=${encodeURIComponent(
                 "Olá Kria! Quero agendar uma reunião (R$50) para conversar pessoalmente ou online sobre meu projeto.",
               )}`}
               target="_blank"
