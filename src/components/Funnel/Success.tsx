@@ -1,5 +1,6 @@
 import { Check, MessageCircle } from "lucide-react";
 import type { FunnelData } from "./Funnel";
+import { waLink } from "@/lib/contact";
 
 type Props = { data: FunnelData };
 
@@ -9,8 +10,6 @@ const PRAZO_LABEL: Record<string, string> = {
   normal: "normal (2 a 4 semanas)",
   flexivel: "flexível (sem pressa)",
 };
-
-const WHATS_NUMBER = "559195091584";
 
 function buildResumoEstrategico(data: FunnelData) {
   const primeiroNome = data.nome.split(" ")[0] || data.nome;
@@ -84,8 +83,7 @@ export default function Success({ data }: Props) {
   const mensagem = buildWhatsMessage(data);
 
   const openWhats = () => {
-    const url = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(mensagem)}`;
-    window.open(url, "_blank");
+    window.open(waLink(mensagem), "_blank");
   };
 
   return (

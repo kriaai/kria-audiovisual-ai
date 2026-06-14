@@ -1,5 +1,7 @@
-import { Sparkles, Camera, Video, Palette, Bot, Globe, Scissors, CalendarCheck } from "lucide-react";
+import { Camera, Video, Palette, Bot, Globe, Scissors, CalendarCheck } from "lucide-react";
 import kriaHero from "@/assets/kria-hero.png.asset.json";
+import BrandLogo from "@/components/BrandLogo";
+import { waLink } from "@/lib/contact";
 
 const pills = [
   { icon: Video, label: "Filmmaker" },
@@ -25,14 +27,8 @@ export default function Hero() {
 
       <div className="relative mx-auto max-w-7xl px-6 pt-10 pb-24 md:pt-16 md:pb-32">
         {/* Logo */}
-        <div className="flex items-center gap-2 text-white">
-          <span className="inline-flex items-center justify-center rounded-xl bg-white/10 backdrop-blur p-2 ring-1 ring-white/20">
-            <Sparkles className="h-5 w-5 text-accent" />
-          </span>
-          <div className="leading-none">
-            <div className="text-2xl font-black tracking-tight">Kria AI</div>
-            <div className="text-[10px] font-semibold tracking-[0.35em] text-white/70">AUDIOVISUAL</div>
-          </div>
+        <div className="flex items-center">
+          <BrandLogo size="lg" variant="onDark" />
         </div>
 
         <div className="mt-14 grid items-center gap-12 md:grid-cols-2">
@@ -90,9 +86,9 @@ export default function Hero() {
             </div>
 
             <a
-              href={`https://wa.me/559195091584?text=${encodeURIComponent(
+              href={waLink(
                 "Olá Kria! Quero agendar uma reunião (R$50) para conversar pessoalmente ou online sobre meu projeto.",
-              )}`}
+              )}
               target="_blank"
               rel="noopener noreferrer"
               className="group relative mt-5 flex w-full items-center justify-between gap-3 rounded-2xl bg-white px-5 py-4 text-left shadow-xl transition hover:scale-[1.01] hover:shadow-2xl"
