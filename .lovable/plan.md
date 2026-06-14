@@ -1,121 +1,65 @@
+# Plano de refino — Kria AI
 
-# Plano atualizado — Kria AI (conversão, parceiros e clube)
+Mantém a estrutura, paleta e fluxo atuais. Apenas refina CSS, troca a marca textual pela logo oficial, corrige o WhatsApp e adiciona seções de posicionamento.
 
-Mantém 100% do visual atual. Mudanças em comportamento, microcopy, integrações e dois novos blocos seguindo o design system existente.
+## 1. Logo oficial (com fundo transparente)
 
-## 1. Fluidez do funil
+- Subir a logo enviada via `lovable-assets`, gerar versão PNG transparente com `edit_image` (`transparent_background: true`) e salvar pointer em `src/assets/kria-logo.png.asset.json`.
+- Criar componente `src/components/BrandLogo.tsx` (img responsiva, alt "Kria AI", tamanhos `sm/md/lg`).
+- Substituir o bloco "Sparkles + Kria AI / AUDIOVISUAL" em:
+  - `src/components/Hero.tsx` (topo)
+  - `src/components/Footer.tsx` (coluna de marca)
+  - `src/routes/clube.tsx` (header)
+- Manter a paleta atual (roxo `--primary`, laranja `--accent`, fundo claro). Nenhuma cor nova.
 
-`Funnel.tsx` hoje força `scrollIntoView` a cada etapa. Remover esse efeito entre etapas; manter scroll suave apenas quando o Hero leva ao funil e ao mostrar a tela de Sucesso.
+## 2. Correção do WhatsApp
 
-## 2. Rodapé novo
+- Substituir todas as ocorrências do número antigo `559195091584` / `(91) 9509-1584` pelo oficial **+55 91 8509-1584** (`5591850091584`… confirmar formatação `5591985091584` se o usuário responder que tem o 9 — por ora uso exatamente o número informado: `559185091584`).
+- Arquivos atingidos (varrer com `rg`): `Hero.tsx`, `Footer.tsx`, `Funnel/Success.tsx`, `Clube.tsx`, qualquer outro CTA.
+- Centralizar o número em `src/lib/contact.ts` (`WHATSAPP_NUMBER`, `WHATSAPP_DISPLAY`, helper `waLink(text)`) para evitar divergência futura.
 
-Criar `src/components/Footer.tsx` e incluir em `index.tsx`:
-- Instagram `@kria.ai` → `https://instagram.com/kria.ai`
-- E-mail `papodekria@gmail.com` (mailto)
-- WhatsApp `(91) 9509-1584`
-- Copyright discreto
-Ícones `lucide-react`, mesmas cores/tokens.
+## 3. Reposicionamento + novos blocos na home
 
-## 3. Captura garantida de leads
+Inserir entre `<Hero />` e `<Funnel />` no `src/routes/index.tsx`, sem mexer no funil:
 
-Formspree já existe (`xkoabjow`). Plano:
-- Enriquecer payload final com objetivo, dores, serviços, valor, prazo, resumo estratégico.
-- **Lead parcial**: ao concluir Etapa 1 (nome + WhatsApp + e-mail válidos), enviar 1 POST silencioso ao Formspree com `tipo: "parcial"` e `_subject: "Lead parcial — {nome}"`. Flag em `useRef` para não duplicar. Erros não bloqueiam UX.
+- **`src/components/Positioning.tsx`** — frase curta: "Plataforma de diagnóstico empresarial, estratégia, IA e conexão com especialistas." + 4 cards de serviços (Consultoria de IA, Planejamento Estratégico, Workshop K.R.I.A, Diagnóstico Kria AI), usando os tokens `bg-card`, `text-primary`, destaque `accent`.
+- **`src/components/DiagnosticoHighlight.tsx`** — bloco de destaque para o Diagnóstico Kria AI por **R$ 59**, com bullets (análise, marketing, oportunidades, tendências, conteúdo, cronograma, ferramentas, próximos passos) e CTA principal "Receber Diagnóstico Kria AI" → WhatsApp com mensagem pré-preenchida.
+- **`src/components/ConsultoriaGabbe.tsx`** — card "Consultoria com Gabbe Mary — Fundadora da Kria AI" com botão WhatsApp.
+- **`src/components/Partners.tsx`** (nova seção dedicada): cards com logo (placeholder com iniciais por enquanto), nome, descrição curta e botão WhatsApp. Estrutura pronta para Veropa Filmes, Mais Brasil e novos parceiros via array de dados. Remover a strip de parceiros do `Footer.tsx`.
 
-## 4. Resumo em 1ª pessoa com emojis e visual escaneável
+## 4. Refinamentos de CSS (sem mudar identidade)
 
-Reescrever `buildWhatsMessage` em `Success.tsx`. Mensagem natural, em 1ª pessoa, com emojis e blocos visualmente claros:
+Ajustes pontuais em `src/styles.css` e componentes:
 
-```
-Olá, equipe Kria AI! 👋
+- Aumentar espaçamento vertical entre seções (`py-20 md:py-28`).
+- Hierarquia: H2 padronizado (`text-3xl md:text-5xl font-black tracking-tight`), subtítulo `text-muted-foreground`.
+- Cards: `rounded-2xl`, `ring-1 ring-border`, `shadow-sm hover:shadow-lg transition`.
+- Botões CTA primários: gradiente sutil roxo→roxo escuro + sombra `shadow-primary/20`; CTA destaque continua laranja.
+- Inputs do funil: `rounded-xl`, foco com `ring-2 ring-accent/40`.
+- Mobile: aumentar `min-h-12` nos botões e revisar paddings em Hero/Funnel.
 
-Meu nome é {nome} e acabei de fazer o diagnóstico no site.
-
-👤 *Sobre mim*
-• Nicho: {nicho}
-• WhatsApp: {whatsapp}
-• E-mail: {email}
-
-🎯 *Meu objetivo*
-{objetivo}
-
-⚠️ *Principais desafios*
-• {dor 1}
-• {dor 2}
-...
-
-💡 *Tenho interesse em*
-• {serviço 1}
-• {serviço 2}
-
-⏱️ *Prazo ideal*: {prazo}
-💰 *Investimento*: {orcamento}
-
-📌 *Resumo*
-{resumo estratégico em 2-3 linhas, em 1ª pessoa}
-
-Gostaria de receber uma proposta personalizada. 🚀
-```
-
-- Texto gerado de forma determinística (templates por nicho/serviço, sem custo/LLM).
-- Mesma string usada na **prévia visual** dentro da tela de Sucesso (bloco igual aos cards atuais) e no botão WhatsApp via `window.open('https://wa.me/559195091584?text=' + encodeURIComponent(msg), '_blank')`.
-
-## 5. Microcopy de conversão na tela de Sucesso
-
-Sem mexer no layout:
-- "Com base nas suas respostas, identificamos as maiores oportunidades para acelerar seu crescimento."
-- "Esta recomendação foi gerada especificamente para o seu cenário. Quanto antes começar, maiores as chances de acelerar resultados."
-
-## 6. Portfólio / Agências parceiras (apenas logos)
-
-Novo componente `src/components/Partners.tsx` entre Hero e Funil:
-- Título curto: "Agências parceiras"
-- Subtítulo discreto: "Quando faz mais sentido, conectamos você diretamente a quem resolve."
-- Faixa horizontal com **só as logos** (sem texto/descrição por cliente):
-  - Troika
-  - Veropa Films
-  - SB Marketing
-- Logos via `src/assets/partners/*` (placeholders monocromáticos com a inicial até o usuário enviar os arquivos reais). Layout em grid responsivo, espaçamento generoso, hover com leve opacidade — coerente com o design atual.
-
-> Observação: assim que você enviar os PNG/SVG das logos, substituo os placeholders sem mudar o layout.
-
-## 7. Clube de prestadores (nova aba/seção)
-
-Nova seção `src/components/Clube.tsx` (renderizada abaixo do funil) + rota dedicada `src/routes/clube.tsx` para link compartilhável.
-
-Objetivo: captar filmmakers, fotógrafos, editores, agências etc. que pagam mensalidade (ex.: R$ 50/mês) para serem divulgados no site e receberem leads.
-
-Conteúdo da seção:
-- Título: "Clube Kria — para prestadores e agências"
-- 3 bullets de benefício:
-  - "Divulgação no site da Kria AI"
-  - "Leads qualificados encaminhados direto para você"
-  - "Conexão com agências e clientes da nossa rede"
-- Preço destacado: "A partir de R$ 50/mês"
-- Mini-formulário de cadastro (nome, área de atuação, cidade, WhatsApp, e-mail, link de portfólio) → envia para Formspree com `_subject: "Clube Kria — novo interessado"`.
-- Botão alternativo "Falar no WhatsApp" abrindo mensagem pré-pronta: *"Olá! Tenho interesse em participar do Clube Kria como prestador/agência."*
-
-Link "Clube" também adicionado discretamente no Header/Hero e no Footer.
-
-## 8. Auditoria final
-
-- Fluxo completo das 5 etapas (mobile 375px + desktop)
-- Botão Continuar libera/bloqueia corretamente
-- `window.open` do WhatsApp dispara a partir de clique (sem popup blocker)
-- Console sem erros, Formspree retornando 200
-- Links do rodapé, Instagram, e-mail, WhatsApp e Clube validados
-
-## Arquivos afetados
+## 5. Detalhes técnicos
 
 ```text
-src/components/Funnel/Funnel.tsx     # remove scroll entre etapas + lead parcial + payload enriquecido
-src/components/Funnel/Success.tsx    # nova buildWhatsMessage com emojis + prévia visual + microcopy
-src/components/Footer.tsx            # NOVO — Instagram, e-mail, WhatsApp, link Clube
-src/components/Partners.tsx          # NOVO — faixa de logos (Troika, Veropa Films, SB Marketing)
-src/components/Clube.tsx             # NOVO — seção do Clube + form Formspree
-src/routes/clube.tsx                 # NOVO — rota dedicada /clube
-src/routes/index.tsx                 # inclui <Partners />, <Clube /> e <Footer />
-src/assets/partners/*                # placeholders das logos (substituíveis depois)
+src/
+  assets/kria-logo.png.asset.json        (novo)
+  components/
+    BrandLogo.tsx                        (novo)
+    Positioning.tsx                      (novo)
+    DiagnosticoHighlight.tsx             (novo)
+    ConsultoriaGabbe.tsx                 (novo)
+    Partners.tsx                         (novo — dedicado)
+    Hero.tsx                             (logo + número)
+    Footer.tsx                           (logo + número + remove strip parceiros)
+    Funnel/Success.tsx                   (número via contact.ts)
+    Clube.tsx                            (logo + número)
+  lib/contact.ts                         (novo — fonte única do WhatsApp)
+  routes/index.tsx                       (composição das novas seções)
+  styles.css                             (refinos de tokens utilitários)
 ```
 
-Nada de mudanças em cores, fontes, espaçamentos globais ou componentes shadcn.
+Pontos abertos a confirmar antes de implementar:
+
+1. **Número correto**: você escreveu `+55 91 8509-1584` (começa com 8). O site hoje usa `9509-1584`. Confirma que o oficial é mesmo **8509-1584**, ou é **9 8509-1584** / **9 9509-1584**?
+2. **Logo no Hero**: substituo o bloco "Sparkles + Kria AI" pela logo oficial (ícone+wordmark juntos), ok? Em fundo escuro do Hero, uso a versão com wordmark em branco (filtro CSS) para legibilidade, mantendo o "K" laranja.
+3. **Funil**: mantenho 100% intacto (lógica, passos, mensagem WhatsApp final), só troco o número. Confirma?
