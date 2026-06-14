@@ -4,8 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-
-const WHATS_NUMBER = "559195091584";
+import { waLink } from "@/lib/contact";
 
 const BENEFITS = [
   "Divulgação no site da Kria AI",
@@ -61,10 +60,7 @@ export default function Clube() {
   const openWhats = () => {
     const msg =
       "Olá! Tenho interesse em participar do Clube Kria como prestador/agência.";
-    window.open(
-      `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(msg)}`,
-      "_blank",
-    );
+    window.open(waLink(msg), "_blank");
   };
 
   return (
