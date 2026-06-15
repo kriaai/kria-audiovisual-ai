@@ -104,12 +104,14 @@ export default function Clube() {
               <p className="mt-1 text-sm text-muted-foreground">
                 A Kria vai te chamar no WhatsApp em breve.
               </p>
-              <button
-                onClick={openWhats}
+              <a
+                href={waLink(whatsMsg)}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="mt-6 inline-flex items-center gap-2 rounded-full bg-emerald-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:bg-emerald-600"
               >
                 <MessageCircle className="h-4 w-4" /> Abrir WhatsApp
-              </button>
+              </a>
             </div>
           ) : (
             <form onSubmit={submit} className="space-y-4">
