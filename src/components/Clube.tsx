@@ -153,13 +153,14 @@ export default function Clube() {
                 {sending ? "Enviando..." : "Quero participar"}
               </Button>
 
-              <button
-                type="button"
-                onClick={openWhats}
+              <a
+                href={waLink(whatsMsg)}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex w-full items-center justify-center gap-2 text-sm font-semibold text-emerald-600 hover:underline"
               >
                 <MessageCircle className="h-4 w-4" /> Prefiro falar no WhatsApp
-              </button>
+              </a>
             </form>
           )}
         </div>
