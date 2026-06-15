@@ -85,22 +85,6 @@ export default function Funnel() {
 
   const next = () => {
     if (!canContinue) return;
-    // Lead parcial silencioso após Etapa 1
-    if (step === 1 && !partialSent.current) {
-      partialSent.current = true;
-      fetch("https://formspree.io/f/xkoabjow", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          _subject: `Lead parcial — ${data.nome}`,
-          _replyto: data.email,
-          tipo: "parcial",
-          nome: data.nome,
-          whatsapp: data.whatsapp,
-          email: data.email,
-        }),
-      }).catch(() => {});
-    }
     if (step < TOTAL) setStep(step + 1);
   };
   const back = () => step > 1 && setStep(step - 1);
