@@ -57,11 +57,8 @@ export default function Clube() {
     }
   };
 
-  const openWhats = () => {
-    const msg =
-      "Olá! Tenho interesse em participar do Clube Kria como prestador/agência.";
-    window.open(waLink(msg), "_blank");
-  };
+  const whatsMsg =
+    "Olá! Tenho interesse em participar do Clube Kria como prestador/agência.";
 
   return (
     <section id="clube" className="px-6 py-16 md:py-24">
@@ -107,12 +104,14 @@ export default function Clube() {
               <p className="mt-1 text-sm text-muted-foreground">
                 A Kria vai te chamar no WhatsApp em breve.
               </p>
-              <button
-                onClick={openWhats}
+              <a
+                href={waLink(whatsMsg)}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="mt-6 inline-flex items-center gap-2 rounded-full bg-emerald-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:bg-emerald-600"
               >
                 <MessageCircle className="h-4 w-4" /> Abrir WhatsApp
-              </button>
+              </a>
             </div>
           ) : (
             <form onSubmit={submit} className="space-y-4">
@@ -154,13 +153,14 @@ export default function Clube() {
                 {sending ? "Enviando..." : "Quero participar"}
               </Button>
 
-              <button
-                type="button"
-                onClick={openWhats}
+              <a
+                href={waLink(whatsMsg)}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex w-full items-center justify-center gap-2 text-sm font-semibold text-emerald-600 hover:underline"
               >
                 <MessageCircle className="h-4 w-4" /> Prefiro falar no WhatsApp
-              </button>
+              </a>
             </form>
           )}
         </div>

@@ -82,9 +82,6 @@ export default function Success({ data }: Props) {
 
   const mensagem = buildWhatsMessage(data);
 
-  const openWhats = () => {
-    window.open(waLink(mensagem), "_blank");
-  };
 
   return (
     <div className="mx-auto max-w-2xl text-center">
@@ -118,14 +115,15 @@ export default function Success({ data }: Props) {
         Esta recomendação foi gerada especificamente para o seu cenário. Quanto antes começar, maiores as chances de acelerar resultados.
       </p>
 
-      <button
-        type="button"
-        onClick={openWhats}
+      <a
+        href={waLink(mensagem)}
+        target="_blank"
+        rel="noopener noreferrer"
         className="mt-6 inline-flex items-center gap-2 rounded-full bg-emerald-500 px-7 py-4 text-base font-bold text-white shadow-xl shadow-emerald-500/30 transition hover:scale-[1.02] hover:bg-emerald-600"
       >
         <MessageCircle className="h-5 w-5" />
         Abrir WhatsApp com resumo
-      </button>
+      </a>
     </div>
   );
 }
