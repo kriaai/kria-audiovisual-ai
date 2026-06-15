@@ -141,21 +141,6 @@ export default function Funnel() {
       setSubmitting(false);
     }
   };
-    try {
-      const res = await fetch("https://formspree.io/f/xkoabjow", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("Falha no envio");
-      setDone(true);
-    } catch (e) {
-      console.error(e);
-      toast.error("Não foi possível enviar. Tente novamente em instantes.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   if (done) {
     return (
