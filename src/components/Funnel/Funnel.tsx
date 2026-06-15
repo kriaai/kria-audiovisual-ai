@@ -7,7 +7,7 @@ import Step2Niche from "./Step2Niche";
 import Step3Service from "./Step3Service";
 import Step4Dynamic from "./Step4Dynamic";
 import Step5Budget from "./Step5Budget";
-import Success from "./Success";
+import Success, { buildWhatsMessage } from "./Success";
 import { SERVICE_QUESTIONS } from "./serviceQuestions";
 import { toast } from "sonner";
 
@@ -85,22 +85,6 @@ export default function Funnel() {
 
   const next = () => {
     if (!canContinue) return;
-    // Lead parcial silencioso após Etapa 1
-    if (step === 1 && !partialSent.current) {
-      partialSent.current = true;
-      fetch("https://formspree.io/f/xkoabjow", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          _subject: `Lead parcial — ${data.nome}`,
-          _replyto: data.email,
-          tipo: "parcial",
-          nome: data.nome,
-          whatsapp: data.whatsapp,
-          email: data.email,
-        }),
-      }).catch(() => {});
-    }
     if (step < TOTAL) setStep(step + 1);
   };
   const back = () => step > 1 && setStep(step - 1);
@@ -127,6 +111,7 @@ export default function Funnel() {
   const submit = async () => {
     setSubmitting(true);
     const servicosStr = data.servicos.join(", ");
+    const mensagemFinal = buildWhatsMessage(data);
     const payload = {
       _subject: `Nova proposta — ${data.nome} (${servicosStr})`,
       _replyto: data.email,
@@ -139,19 +124,20 @@ export default function Funnel() {
       orcamento: `R$ ${data.orcamento.toLocaleString("pt-BR")}`,
       prazo: data.prazo,
       extras: data.observacoes,
+      resumo: mensagemFinal,
+      origem: "Diagnóstico Kria AI",
+      dataEnvio: new Date().toISOString(),
     };
     try {
-      const res = await fetch("https://formspree.io/f/xkoabjow", {
+      await fetch("https://formspree.io/f/xkoabjow", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error("Falha no envio");
-      setDone(true);
     } catch (e) {
-      console.error(e);
-      toast.error("Não foi possível enviar. Tente novamente em instantes.");
+      console.error("Erro ao enviar para Formspree:", e);
     } finally {
+      setDone(true);
       setSubmitting(false);
     }
   };
