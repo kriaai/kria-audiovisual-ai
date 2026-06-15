@@ -7,7 +7,7 @@ import Step2Niche from "./Step2Niche";
 import Step3Service from "./Step3Service";
 import Step4Dynamic from "./Step4Dynamic";
 import Step5Budget from "./Step5Budget";
-import Success from "./Success";
+import Success, { buildWhatsMessage } from "./Success";
 import { SERVICE_QUESTIONS } from "./serviceQuestions";
 import { toast } from "sonner";
 
