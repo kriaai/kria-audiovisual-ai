@@ -82,9 +82,6 @@ export default function Success({ data }: Props) {
 
   const mensagem = buildWhatsMessage(data);
 
-  const openWhats = () => {
-    window.open(waLink(mensagem), "_blank");
-  };
 
   return (
     <div className="mx-auto max-w-2xl text-center">
