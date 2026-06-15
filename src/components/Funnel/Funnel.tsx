@@ -111,6 +111,7 @@ export default function Funnel() {
   const submit = async () => {
     setSubmitting(true);
     const servicosStr = data.servicos.join(", ");
+    const mensagemFinal = buildWhatsMessage(data);
     const payload = {
       _subject: `Nova proposta — ${data.nome} (${servicosStr})`,
       _replyto: data.email,
@@ -123,7 +124,23 @@ export default function Funnel() {
       orcamento: `R$ ${data.orcamento.toLocaleString("pt-BR")}`,
       prazo: data.prazo,
       extras: data.observacoes,
+      resumo: mensagemFinal,
+      origem: "Diagnóstico Kria AI",
+      dataEnvio: new Date().toISOString(),
     };
+    try {
+      await fetch("https://formspree.io/f/xkoabjow", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload),
+      });
+    } catch (e) {
+      console.error("Erro ao enviar para Formspree:", e);
+    } finally {
+      setDone(true);
+      setSubmitting(false);
+    }
+  };
     try {
       const res = await fetch("https://formspree.io/f/xkoabjow", {
         method: "POST",
