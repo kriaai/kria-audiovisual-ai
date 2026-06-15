@@ -57,11 +57,8 @@ export default function Clube() {
     }
   };
 
-  const openWhats = () => {
-    const msg =
-      "Olá! Tenho interesse em participar do Clube Kria como prestador/agência.";
-    window.open(waLink(msg), "_blank");
-  };
+  const whatsMsg =
+    "Olá! Tenho interesse em participar do Clube Kria como prestador/agência.";
 
   return (
     <section id="clube" className="px-6 py-16 md:py-24">
