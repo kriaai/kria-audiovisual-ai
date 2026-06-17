@@ -4,6 +4,7 @@ import Positioning from "@/components/Positioning";
 import DiagnosticoHighlight from "@/components/DiagnosticoHighlight";
 import ConsultoriaGabbe from "@/components/ConsultoriaGabbe";
 import Funnel from "@/components/Funnel/Funnel";
+import Casos from "@/components/Casos";
 import Partners from "@/components/Partners";
 import Clube from "@/components/Clube";
 import Footer from "@/components/Footer";
@@ -12,9 +13,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Kria AI — Diagnóstico, estratégia e IA para o seu negócio" },
-      { name: "description", content: "Plataforma de diagnóstico empresarial, estratégia, inteligência artificial e conexão com especialistas. Descubra em 2 minutos o que seu negócio precisa." },
+      { name: "description", content: "Descubra o que está travando o crescimento do seu negócio. A Kria AI analisa seus gargalos e recomenda as soluções certas." },
       { property: "og:title", content: "Kria AI" },
-      { property: "og:description", content: "Diagnóstico, estratégia, IA e conexão com especialistas." },
+      { property: "og:description", content: "Diagnóstico inteligente, estratégia, IA e conexão com especialistas." },
     ],
   }),
   component: Index,
@@ -25,9 +26,10 @@ function Index() {
     <main className="min-h-screen bg-background">
       <Hero />
       <Funnel />
+      <Positioning />
       <DiagnosticoHighlight />
       <ConsultoriaGabbe />
-      <Positioning />
+      <Casos />
       <Partners />
       <Clube />
       <Footer />
