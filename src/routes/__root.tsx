@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
+import SiteNav from "@/components/SiteNav";
+import FloatingActions from "@/components/FloatingActions";
 
 function NotFoundComponent() {
   return (
@@ -121,8 +123,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <SiteNav />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <FloatingActions />
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );
