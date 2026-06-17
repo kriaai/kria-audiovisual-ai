@@ -49,9 +49,12 @@ const initial: FunnelData = {
 
 const TOTAL = 5;
 
-const SEGMENTOS = [
-  "Restaurante", "Loja", "Moda", "Clínica", "Advogado",
-  "Corretor", "Estética", "Academia", "Personal", "Influenciador", "Outro",
+const SEGMENTOS: { value: string; icon: string; titulo: string; sub: string }[] = [
+  { value: "Médicos e Saúde", icon: "🏥", titulo: "Médicos e Saúde", sub: "Atrair pacientes e autoridade no digital" },
+  { value: "Políticos e Assessores", icon: "🏛️", titulo: "Políticos e Assessores", sub: "Comunicação estratégica e presença pública" },
+  { value: "Varejo e Comércio", icon: "🛍️", titulo: "Varejo e Comércio", sub: "Vender mais com conteúdo e tráfego" },
+  { value: "Influencers e Criadores", icon: "📱", titulo: "Influencers e Criadores", sub: "Crescer audiência e monetizar com IA" },
+  { value: "Eventos e Entretenimento", icon: "🎪", titulo: "Eventos e Entretenimento", sub: "Encher casa e gerar buzz nas redes" },
 ];
 const TEMPOS = ["Menos de 6 meses", "6 meses a 1 ano", "1 a 3 anos", "Mais de 3 anos"];
 const FATURAMENTOS = [
