@@ -24,10 +24,10 @@ function Index() {
   return (
     <main className="min-h-screen bg-background">
       <Hero />
-      <Positioning />
+      <Funnel />
       <DiagnosticoHighlight />
       <ConsultoriaGabbe />
-      <Funnel />
+      <Positioning />
       <Partners />
       <Clube />
       <Footer />

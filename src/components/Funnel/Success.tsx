@@ -1,6 +1,5 @@
-import { Check, MessageCircle, FileText, Sparkles, Star, TrendingUp, AlertTriangle, Lightbulb } from "lucide-react";
+import { Check, MessageCircle, Sparkles, Star, TrendingUp, AlertTriangle, Lightbulb } from "lucide-react";
 import type { FunnelData } from "./Funnel";
-import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { calcScores, scoreKria, recomendar, classificarLead, type Pacote } from "./packages";
 
@@ -41,6 +40,7 @@ function buildMensagemWhats(
     ``,
     `*Nome:* ${primeiroNome}`,
     `*Instagram:* ${d.instagram}`,
+    `*E-mail:* ${d.email}`,
     `*Segmento:* ${d.segmento}`,
     `*Score Kria:* ${total}/100`,
     ``,
@@ -112,7 +112,6 @@ function PacoteCard({
 }
 
 export default function Success({ data }: Props) {
-  const navigate = useNavigate();
   const scores = useMemo(() => calcScores(data), [data]);
   const total = useMemo(() => scoreKria(scores), [scores]);
   const rec = useMemo(() => recomendar(data, scores), [data, scores]);
@@ -137,9 +136,11 @@ export default function Success({ data }: Props) {
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           _subject: `🛒 Seleção de pacotes — ${data.nome} | Score ${total}`,
+          tipoFormulario: "Diagnóstico Kria AI",
           tipo: "Seleção de pacotes após diagnóstico",
           nome: data.nome,
           whatsapp: data.whatsapp,
+          email: data.email,
           instagram: data.instagram,
           segmento: data.segmento,
           scoreKria: total,
@@ -301,14 +302,6 @@ export default function Success({ data }: Props) {
           >
             <MessageCircle className="h-5 w-5" />
             {enviando ? "Abrindo WhatsApp..." : "Continuar pelo WhatsApp"}
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/diagnostico-pdf" })}
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-purple-600 px-7 py-4 text-base font-bold text-white shadow-xl shadow-purple-600/30 transition hover:scale-[1.02] hover:bg-purple-700"
-          >
-            <FileText className="h-5 w-5" />
-            Quero meu diagnóstico em PDF
           </button>
         </div>
         <p className="text-xs text-muted-foreground">

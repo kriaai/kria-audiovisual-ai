@@ -11,6 +11,7 @@ export type FunnelData = {
   // Etapa 1 - Identificação
   nome: string;
   whatsapp: string;
+  email: string;
   instagram: string;
   // Etapa 2 - Negócio
   segmento: string;
@@ -45,6 +46,7 @@ export type FunnelData = {
 const initial: FunnelData = {
   nome: "",
   whatsapp: "",
+  email: "",
   instagram: "",
   segmento: "",
   tempoNegocio: "",
@@ -225,7 +227,12 @@ export default function Funnel() {
   const canContinue = (() => {
     switch (step) {
       case 1:
-        return data.nome.trim().length >= 2 && isWhats(data.whatsapp) && data.instagram.trim().length >= 2;
+        return (
+          data.nome.trim().length >= 2 &&
+          isWhats(data.whatsapp) &&
+          /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim()) &&
+          data.instagram.trim().length >= 2
+        );
       case 2:
         return !!data.segmento && !!data.tempoNegocio && !!data.faturamento;
       case 3:
@@ -252,9 +259,11 @@ export default function Funnel() {
     setSubmitting(true);
     const payload = {
       _subject: `🎯 Diagnóstico Kria — ${data.nome} | ${data.segmento} | Fat: ${data.faturamento}`,
+      tipoFormulario: "Diagnóstico Kria AI",
       "DADOS PESSOAIS": "---",
       nome: data.nome,
       whatsapp: data.whatsapp,
+      email: data.email,
       instagram: data.instagram,
       "NEGÓCIO": "---",
       segmento: data.segmento,
@@ -350,6 +359,10 @@ export default function Funnel() {
               <div>
                 <Label htmlFor="whatsapp">WhatsApp (com DDD)</Label>
                 <Input id="whatsapp" value={data.whatsapp} onChange={(e) => update("whatsapp", e.target.value)} placeholder="(91) 99999-9999" className="mt-1.5 h-12" maxLength={20} />
+              </div>
+              <div>
+                <Label htmlFor="email">E-mail</Label>
+                <Input id="email" type="email" value={data.email} onChange={(e) => update("email", e.target.value)} placeholder="seuemail@exemplo.com" className="mt-1.5 h-12" maxLength={120} />
               </div>
               <div>
                 <Label htmlFor="instagram">Instagram</Label>
