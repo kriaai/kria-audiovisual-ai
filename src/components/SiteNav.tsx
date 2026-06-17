@@ -38,11 +38,13 @@ export default function SiteNav() {
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
+  const isLight = scrolled;
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-40 transition ${
         scrolled
-          ? "border-b border-white/10 bg-primary-deep/70 backdrop-blur-md shadow-lg shadow-primary/20"
+          ? "border-b border-white/40 bg-white/80 backdrop-blur-xl shadow-lg shadow-primary/10"
           : "bg-transparent"
       }`}
     >
@@ -53,7 +55,7 @@ export default function SiteNav() {
           className="flex items-center"
           aria-label="Início"
         >
-          <BrandLogo size="md" variant="onDark" />
+          <BrandLogo size="md" variant={scrolled ? "default" : "onDark"} />
         </button>
 
         <nav className="hidden items-center gap-1 lg:flex">
@@ -62,7 +64,11 @@ export default function SiteNav() {
               key={it.target}
               type="button"
               onClick={() => scrollTo(it.target)}
-              className="rounded-full px-3 py-2 text-sm font-semibold text-white/85 transition hover:bg-white/10 hover:text-white"
+              className={`rounded-full px-3 py-2 text-sm font-semibold transition ${
+                scrolled
+                  ? "text-primary-deep/90 hover:bg-primary-deep/10 hover:text-primary-deep"
+                  : "text-white/85 hover:bg-white/10 hover:text-white"
+              }`}
             >
               {it.label}
             </button>
@@ -79,7 +85,11 @@ export default function SiteNav() {
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white ring-1 ring-white/20 backdrop-blur lg:hidden"
+          className={`inline-flex h-10 w-10 items-center justify-center rounded-full backdrop-blur lg:hidden transition ${
+            scrolled
+              ? "bg-primary-deep/10 text-primary-deep ring-1 ring-primary-deep/20"
+              : "bg-white/10 text-white ring-1 ring-white/20"
+          }`}
           aria-label="Abrir menu"
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -88,7 +98,11 @@ export default function SiteNav() {
 
       {open && (
         <div className="lg:hidden">
-          <div className="border-t border-white/10 bg-primary-deep/95 px-4 py-3 backdrop-blur">
+          <div className={`border-t px-4 py-3 backdrop-blur ${
+            scrolled
+              ? "border-primary-deep/10 bg-white/95"
+              : "border-white/10 bg-primary-deep/95"
+          }`}>
             <div className="flex flex-col gap-1">
               {ITEMS.map((it) => (
                 <button
@@ -98,7 +112,11 @@ export default function SiteNav() {
                     setOpen(false);
                     scrollTo(it.target);
                   }}
-                  className="rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-white/90 hover:bg-white/10"
+                  className={`rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition ${
+                    scrolled
+                      ? "text-primary-deep/90 hover:bg-primary-deep/10"
+                      : "text-white/90 hover:bg-white/10"
+                  }`}
                 >
                   {it.label}
                 </button>
