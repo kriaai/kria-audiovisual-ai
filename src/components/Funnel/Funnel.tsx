@@ -3,30 +3,43 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { ChevronLeft, ChevronRight, Send, Loader2, Sparkles } from "lucide-react";
 import Success from "./Success";
 
 export type FunnelData = {
-  // Etapa 1
+  // Etapa 1 - Identificação
   nome: string;
   whatsapp: string;
   instagram: string;
-  // Etapa 2
+  // Etapa 2 - Negócio
   segmento: string;
   tempoNegocio: string;
   faturamento: string;
-  // Etapa 3
+  // Etapa 3 - Marketing
   canais: string[];
   anuncios: string;
   equipeMkt: string;
   frequenciaConteudo: string;
-  // Etapa 4
+  // Etapa 4 - Estrutura digital
   gravaVideos: string;
   equipamento: string;
   ferramentas: string[];
-  // Etapa 5
+  // Etapa 5 - Desafio
   situacao: string;
-  problemaUm: string;
+  // Etapa 6 - Objetivos & Aquisição & Presença
+  objetivo90dias: string;
+  origemClientes: string[];
+  possuiSite: string;
+  possuiWhatsappBusiness: string;
+  // Etapa 7 - Conteúdo & Equipe
+  dificuldadeConteudo: string;
+  apareceEmVideos: string;
+  criadorConteudo: string;
+  // Etapa 8 - Investimento, urgência, problema
+  faixaInvestimento: string;
+  urgencia: string;
+  problemaPrincipalTexto: string;
 };
 
 const initial: FunnelData = {
@@ -44,10 +57,19 @@ const initial: FunnelData = {
   equipamento: "",
   ferramentas: [],
   situacao: "",
-  problemaUm: "",
+  objetivo90dias: "",
+  origemClientes: [],
+  possuiSite: "",
+  possuiWhatsappBusiness: "",
+  dificuldadeConteudo: "",
+  apareceEmVideos: "",
+  criadorConteudo: "",
+  faixaInvestimento: "",
+  urgencia: "",
+  problemaPrincipalTexto: "",
 };
 
-const TOTAL = 5;
+const TOTAL = 8;
 
 const SEGMENTOS: { value: string; icon: string; titulo: string; sub: string }[] = [
   { value: "Médicos e Saúde", icon: "🏥", titulo: "Médicos e Saúde", sub: "Atrair pacientes e autoridade no digital" },
@@ -81,12 +103,45 @@ const SITUACOES = [
   "Quero crescer mais rápido",
 ];
 
+const OBJETIVOS = [
+  "Conseguir mais clientes",
+  "Aumentar faturamento",
+  "Fortalecer minha marca",
+  "Organizar meu marketing",
+  "Lançar um produto ou serviço",
+  "Melhorar minhas redes sociais",
+  "Automatizar processos",
+  "Outro",
+];
+const ORIGEM_CLIENTES = [
+  "Indicação", "Instagram", "Facebook", "Google", "WhatsApp",
+  "Tráfego Pago", "Marketplace", "Site", "Eventos presenciais", "Outro",
+];
+const SIM_NAO = ["Sim", "Não"];
+const SIM_NAO_NAOSEI = ["Sim", "Não", "Não sei"];
+const DIFICULDADES = [
+  "Falta de tempo", "Falta de ideias", "Vergonha de aparecer",
+  "Não sei gravar", "Não sei editar", "Não sei o que postar",
+  "Falta de organização", "Não tenho dificuldade",
+];
+const APARECE_VIDEOS = ["Sim", "Não", "Talvez"];
+const INVESTIMENTOS = [
+  "Até R$ 100", "R$ 100 a R$ 300", "R$ 300 a R$ 1.000",
+  "R$ 1.000 a R$ 3.000", "Acima de R$ 3.000",
+];
+const URGENCIAS = [
+  "Hoje", "Nos próximos 30 dias", "Nos próximos 3 meses", "Ainda estou pesquisando",
+];
+const CRIADORES = [
+  "Eu mesmo", "Funcionário", "Freelancer", "Agência", "Ninguém cria conteúdo",
+];
+
 const SUGESTOES: Record<string, string[]> = {
   mais: ["Mais clientes", "Mais vendas", "Mais alcance", "Mais seguidores"],
   cli: ["Mais clientes", "Clientes recorrentes"],
   vend: ["Mais vendas", "Aumentar ticket médio", "Vender pelo Instagram"],
-  cont: ["Conteúdo para Instagram", "Conteúdo para Reels", "Conteúdo para vendas", "Conteúdo estratégico"],
-  reel: ["Reels que vendem", "Reels virais", "Roteiro de Reels"],
+  cont: ["Conteúdo para Instagram", "Conteúdo para Reels", "Conteúdo estratégico"],
+  reel: ["Reels que vendem", "Reels virais"],
   segu: ["Mais seguidores", "Seguidores qualificados"],
   alca: ["Mais alcance", "Alcance orgânico"],
   trafe: ["Tráfego pago no Instagram", "Tráfego pago no Google"],
@@ -106,7 +161,6 @@ function getSugestoes(input: string): string[] {
   return Array.from(set).slice(0, 4);
 }
 
-// ---------- UI helpers ----------
 function Chips({ options, value, onSelect, multi = false, selected = [] }: {
   options: string[]; value?: string; onSelect: (v: string) => void;
   multi?: boolean; selected?: string[];
@@ -143,7 +197,6 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-// ---------- Component ----------
 export default function Funnel() {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<FunnelData>(initial);
@@ -160,7 +213,7 @@ export default function Funnel() {
   const update = <K extends keyof FunnelData>(key: K, value: FunnelData[K]) =>
     setData((d) => ({ ...d, [key]: value }));
 
-  const toggleArr = (key: "canais" | "ferramentas", v: string) => {
+  const toggleArr = (key: "canais" | "ferramentas" | "origemClientes", v: string) => {
     setData((d) => {
       const cur = d[key];
       return { ...d, [key]: cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v] };
@@ -180,7 +233,13 @@ export default function Funnel() {
       case 4:
         return !!data.gravaVideos && !!data.equipamento && data.ferramentas.length > 0;
       case 5:
-        return !!data.situacao && data.problemaUm.trim().length >= 2;
+        return !!data.situacao;
+      case 6:
+        return !!data.objetivo90dias && data.origemClientes.length > 0 && !!data.possuiSite && !!data.possuiWhatsappBusiness;
+      case 7:
+        return !!data.dificuldadeConteudo && !!data.apareceEmVideos && !!data.criadorConteudo;
+      case 8:
+        return !!data.faixaInvestimento && !!data.urgencia && data.problemaPrincipalTexto.trim().length >= 3;
       default:
         return false;
     }
@@ -212,7 +271,19 @@ export default function Funnel() {
       ferramentas: data.ferramentas.join(", "),
       "DESAFIO": "---",
       situacao: data.situacao,
-      problemaUm: data.problemaUm,
+      "OBJETIVOS & AQUISIÇÃO": "---",
+      objetivo90dias: data.objetivo90dias,
+      origemClientes: data.origemClientes.join(", "),
+      possuiSite: data.possuiSite,
+      possuiWhatsappBusiness: data.possuiWhatsappBusiness,
+      "PERFIL DE CONTEÚDO": "---",
+      dificuldadeConteudo: data.dificuldadeConteudo,
+      apareceEmVideos: data.apareceEmVideos,
+      criadorConteudo: data.criadorConteudo,
+      "QUALIFICAÇÃO": "---",
+      faixaInvestimento: data.faixaInvestimento,
+      urgencia: data.urgencia,
+      problemaPrincipalTexto: data.problemaPrincipalTexto,
       "META": "---",
       origem: "Diagnóstico Kria AI",
       dataEnvio: new Date().toLocaleString("pt-BR", { timeZone: "America/Belem" }),
@@ -231,7 +302,7 @@ export default function Funnel() {
     }
   };
 
-  const sugestoes = useMemo(() => getSugestoes(data.problemaUm), [data.problemaUm]);
+  const sugestoes = useMemo(() => getSugestoes(data.problemaPrincipalTexto), [data.problemaPrincipalTexto]);
 
   if (done) {
     return (
@@ -243,11 +314,14 @@ export default function Funnel() {
 
   const progress = (step / TOTAL) * 100;
   const titulos: Record<number, { tag: string; h: string; sub: string }> = {
-    1: { tag: "Identificação", h: "Vamos descobrir o que está impedindo seu negócio de crescer.", sub: "Em menos de 2 minutos, a Kria monta um diagnóstico estratégico pra você." },
+    1: { tag: "Identificação", h: "Vamos descobrir o que está impedindo seu negócio de crescer.", sub: "Em menos de 3 minutos, a Kria monta um diagnóstico estratégico pra você." },
     2: { tag: "Sobre o negócio", h: "Conta um pouco sobre o seu negócio.", sub: "Quanto mais real, mais certeiro o diagnóstico." },
     3: { tag: "Marketing", h: "Como você atrai clientes hoje?", sub: "Sem julgamento — só pra entender o ponto de partida." },
     4: { tag: "Estrutura digital", h: "Sua estrutura de conteúdo.", sub: "Vamos ver o que você já tem em mãos." },
     5: { tag: "Desafio principal", h: "O que mais te incomoda hoje?", sub: "É aqui que a Kria foca a estratégia." },
+    6: { tag: "Objetivos", h: "Pra onde você quer ir nos próximos 90 dias?", sub: "Isso define o tipo de plano que vamos montar." },
+    7: { tag: "Conteúdo & equipe", h: "Como funciona sua produção hoje?", sub: "Entender o time muda totalmente a recomendação." },
+    8: { tag: "Última etapa", h: "Pra fechar o diagnóstico.", sub: "Essas respostas personalizam a sua proposta." },
   };
   const t = titulos[step];
 
@@ -356,13 +430,55 @@ export default function Funnel() {
               <Field label="Qual destas situações mais parece com você?">
                 <Chips options={SITUACOES} value={data.situacao} onSelect={(v) => update("situacao", v)} />
               </Field>
-              <Field label="Se a Kria pudesse resolver apenas um problema do seu negócio hoje, qual seria?">
-                <Input
-                  value={data.problemaUm}
-                  onChange={(e) => update("problemaUm", e.target.value)}
-                  placeholder="Ex.: mais clientes, conteúdo, vendas..."
-                  className="h-12"
-                  maxLength={200}
+            </div>
+          )}
+
+          {step === 6 && (
+            <div className="space-y-7">
+              <Field label="Qual seu principal objetivo nos próximos 90 dias?">
+                <Chips options={OBJETIVOS} value={data.objetivo90dias} onSelect={(v) => update("objetivo90dias", v)} />
+              </Field>
+              <Field label="Como seus clientes chegam até você hoje?">
+                <Chips options={ORIGEM_CLIENTES} selected={data.origemClientes} multi onSelect={(v) => toggleArr("origemClientes", v)} />
+              </Field>
+              <Field label="Você possui site ou landing page?">
+                <Chips options={SIM_NAO} value={data.possuiSite} onSelect={(v) => update("possuiSite", v)} />
+              </Field>
+              <Field label="Você utiliza WhatsApp Business?">
+                <Chips options={SIM_NAO_NAOSEI} value={data.possuiWhatsappBusiness} onSelect={(v) => update("possuiWhatsappBusiness", v)} />
+              </Field>
+            </div>
+          )}
+
+          {step === 7 && (
+            <div className="space-y-7">
+              <Field label="Qual sua maior dificuldade ao criar conteúdo?">
+                <Chips options={DIFICULDADES} value={data.dificuldadeConteudo} onSelect={(v) => update("dificuldadeConteudo", v)} />
+              </Field>
+              <Field label="Você estaria disposto(a) a aparecer em vídeos?">
+                <Chips options={APARECE_VIDEOS} value={data.apareceEmVideos} onSelect={(v) => update("apareceEmVideos", v)} />
+              </Field>
+              <Field label="Quem cria seu conteúdo atualmente?">
+                <Chips options={CRIADORES} value={data.criadorConteudo} onSelect={(v) => update("criadorConteudo", v)} />
+              </Field>
+            </div>
+          )}
+
+          {step === 8 && (
+            <div className="space-y-7">
+              <Field label="Quanto você estaria disposto(a) a investir para resolver seu principal problema?">
+                <Chips options={INVESTIMENTOS} value={data.faixaInvestimento} onSelect={(v) => update("faixaInvestimento", v)} />
+              </Field>
+              <Field label="Quando você pretende resolver esse problema?">
+                <Chips options={URGENCIAS} value={data.urgencia} onSelect={(v) => update("urgencia", v)} />
+              </Field>
+              <Field label="Se a Kria pudesse resolver apenas um problema do seu negócio agora, qual seria?">
+                <Textarea
+                  value={data.problemaPrincipalTexto}
+                  onChange={(e) => update("problemaPrincipalTexto", e.target.value)}
+                  placeholder="Conta com suas palavras o que mais te incomoda hoje..."
+                  className="min-h-[110px]"
+                  maxLength={500}
                 />
                 {sugestoes.length > 0 && (
                   <div className="flex flex-wrap gap-2 pt-1">
@@ -370,7 +486,7 @@ export default function Funnel() {
                       <button
                         key={s}
                         type="button"
-                        onClick={() => update("problemaUm", s)}
+                        onClick={() => update("problemaPrincipalTexto", s)}
                         className="rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary hover:bg-primary/10"
                       >
                         {s}
