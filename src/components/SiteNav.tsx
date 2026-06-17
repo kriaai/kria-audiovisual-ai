@@ -85,7 +85,11 @@ export default function SiteNav() {
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white ring-1 ring-white/20 backdrop-blur lg:hidden"
+          className={`inline-flex h-10 w-10 items-center justify-center rounded-full backdrop-blur lg:hidden transition ${
+            scrolled
+              ? "bg-primary-deep/10 text-primary-deep ring-1 ring-primary-deep/20"
+              : "bg-white/10 text-white ring-1 ring-white/20"
+          }`}
           aria-label="Abrir menu"
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -94,7 +98,11 @@ export default function SiteNav() {
 
       {open && (
         <div className="lg:hidden">
-          <div className="border-t border-white/10 bg-primary-deep/95 px-4 py-3 backdrop-blur">
+          <div className={`border-t px-4 py-3 backdrop-blur ${
+            scrolled
+              ? "border-primary-deep/10 bg-white/95"
+              : "border-white/10 bg-primary-deep/95"
+          }`}>
             <div className="flex flex-col gap-1">
               {ITEMS.map((it) => (
                 <button
@@ -104,7 +112,11 @@ export default function SiteNav() {
                     setOpen(false);
                     scrollTo(it.target);
                   }}
-                  className="rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-white/90 hover:bg-white/10"
+                  className={`rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition ${
+                    scrolled
+                      ? "text-primary-deep/90 hover:bg-primary-deep/10"
+                      : "text-white/90 hover:bg-white/10"
+                  }`}
                 >
                   {it.label}
                 </button>
