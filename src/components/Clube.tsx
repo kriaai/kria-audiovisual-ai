@@ -42,9 +42,10 @@ export default function Clube() {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          _subject: `Clube Kria — novo interessado: ${form.nome}`,
+          _subject: `Seja um Kria — novo cadastro: ${form.nome}`,
           _replyto: form.email,
-          tipo: "clube",
+          tipoFormulario: "Cadastro Seja um Kria",
+          tipo: "Seja um Kria",
           ...form,
         }),
       });
@@ -58,21 +59,21 @@ export default function Clube() {
   };
 
   const whatsMsg =
-    "Olá! Tenho interesse em participar do Clube Kria como prestador/agência.";
+    "Olá! Quero ser um Kria — fazer parte da rede de parceiros da Kria AI.";
 
   return (
     <section id="clube" className="px-6 py-16 md:py-24">
       <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2 md:items-center">
         <div>
           <div className="inline-flex items-center gap-2 rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent">
-            Clube Kria
+            Seja um Kria
           </div>
           <h2 className="mt-4 text-3xl font-black tracking-tight md:text-4xl">
-            Para prestadores e agências
+            Faça parte da rede Kria AI
           </h2>
           <p className="mt-3 max-w-lg text-muted-foreground">
-            Filmmakers, fotógrafos, editores, designers e agências: faça parte da rede
-            que a Kria AI indica todos os dias.
+            Você é criador, agência, designer, videomaker, social media, editor, estrategista ou
+            trabalha com soluções digitais? Cadastre-se para fazer parte da nossa rede.
           </p>
 
           <ul className="mt-6 space-y-3">
@@ -115,7 +116,7 @@ export default function Clube() {
             </div>
           ) : (
             <form onSubmit={submit} className="space-y-4">
-              <h3 className="text-lg font-black">Quero entrar no Clube</h3>
+              <h3 className="text-lg font-black">Quero ser um Kria</h3>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
                   <Label htmlFor="c-nome">Nome</Label>

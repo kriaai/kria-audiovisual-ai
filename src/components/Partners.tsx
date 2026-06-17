@@ -38,13 +38,13 @@ export default function Partners() {
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto max-w-2xl text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-accent/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-accent">
-            Parceiros Kria
+            Nossos Krias
           </div>
           <h2 className="mt-3 text-3xl font-black tracking-tight text-foreground md:text-4xl">
-            Conexão com quem <span className="text-accent">resolve</span>.
+            Conheça nossos <span className="text-accent">Krias</span>.
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Quando faz mais sentido, indicamos você diretamente a parceiros de confiança.
+            Profissionais, agências e criadores parceiros que fazem parte da rede Kria AI.
           </p>
         </div>
 
