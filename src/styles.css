@@ -180,8 +180,14 @@
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-@utility animate-marquee { animation: marquee 38s linear infinite; }
-@utility animate-marquee-slow { animation: marquee 55s linear infinite; }
+@utility animate-marquee { animation: marquee 60s linear infinite; }
+@utility animate-marquee-slow { animation: marquee 85s linear infinite; }
+
+@utility niche-card {
+  box-shadow:
+    0 12px 35px -10px rgba(0, 0, 0, 0.55),
+    0 0 0 1px oklch(0.85 0.10 305 / 0.10) inset;
+}
 
 @layer base {
   * { border-color: var(--color-border); }
