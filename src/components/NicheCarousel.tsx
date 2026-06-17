@@ -45,15 +45,19 @@ export default function NicheCarousel() {
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[var(--kria-transition-from)] to-transparent md:w-28" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[var(--kria-transition-to)] to-transparent md:w-28" />
 
-            <div className="animate-marquee flex w-max items-stretch gap-4 group-hover:[animation-play-state:paused]">
+            {/* Vinheta para sensação 3D */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-full bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.35)_100%)]" />
+
+            <div className="animate-marquee flex w-max items-stretch gap-5 py-4 group-hover:[animation-play-state:paused]">
               {LOOP.map(({ icon: Icon, name, tag }, i) => (
                 <article
                   key={`${name}-${i}`}
-                  className="group/card relative flex w-[220px] shrink-0 flex-col gap-3 overflow-hidden rounded-2xl border border-white/15 bg-white/[0.06] p-5 text-left shadow-[0_8px_30px_-10px_rgba(0,0,0,0.5)] backdrop-blur-xl transition hover:-translate-y-1 hover:border-accent/50 hover:bg-white/[0.10] md:w-[260px]"
+                  className="group/card niche-card relative flex w-[230px] shrink-0 flex-col gap-3 overflow-hidden rounded-3xl border border-white/20 bg-white/[0.07] p-5 text-left backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.04] hover:border-accent/60 hover:bg-white/[0.12] md:w-[270px]"
                 >
-                  <span className="pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full bg-accent/20 blur-2xl transition group-hover/card:bg-accent/40" />
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-accent/30 to-fuchsia-500/20 text-accent ring-1 ring-accent/40 shadow-[0_0_20px_-4px_oklch(0.72_0.21_45/.6)]">
-                    <Icon className="h-5 w-5" />
+                  <span className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-accent/25 blur-2xl transition group-hover/card:bg-accent/50" />
+                  <span className="pointer-events-none absolute -left-10 -bottom-10 h-24 w-24 rounded-full bg-fuchsia-500/20 blur-2xl" />
+                  <span className="relative inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-accent/40 via-fuchsia-500/25 to-primary/40 text-white ring-1 ring-white/30 shadow-[0_0_25px_-4px_oklch(0.72_0.21_45/.7)]">
+                    <Icon className="h-6 w-6" />
                   </span>
                   <div className="text-base font-black tracking-tight text-white">{name}</div>
                   <p className="text-xs leading-relaxed text-white/70">{tag}</p>
