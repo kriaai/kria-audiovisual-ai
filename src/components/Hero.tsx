@@ -21,14 +21,6 @@ export default function Hero() {
             <span className="absolute -inset-8 -z-10 rounded-full bg-accent/25 blur-3xl" />
             <BrandLogo size="lg" variant="onDark" className="h-16 md:h-28" />
           </div>
-          <div className="text-center md:text-left">
-            <div className="text-3xl font-black tracking-tight text-white md:text-5xl">
-              Kria <span className="text-accent">AI</span>
-            </div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/60">
-              Inteligência criativa
-            </div>
-          </div>
         </div>
 
         <div className="mt-12 grid items-center gap-12 md:grid-cols-2">
@@ -55,12 +47,6 @@ export default function Hero() {
               >
                 <Sparkles className="h-4 w-4" />
                 Fazer Diagnóstico Kria Gratuito
-              </button>
-              <button
-                onClick={() => scrollTo("solucoes")}
-                className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-4 text-base font-bold text-white backdrop-blur transition hover:bg-white/20"
-              >
-                Ver soluções
               </button>
             </div>
 
