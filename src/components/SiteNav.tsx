@@ -64,7 +64,11 @@ export default function SiteNav() {
               key={it.target}
               type="button"
               onClick={() => scrollTo(it.target)}
-              className="rounded-full px-3 py-2 text-sm font-semibold text-white/85 transition hover:bg-white/10 hover:text-white"
+              className={`rounded-full px-3 py-2 text-sm font-semibold transition ${
+                scrolled
+                  ? "text-primary-deep/90 hover:bg-primary-deep/10 hover:text-primary-deep"
+                  : "text-white/85 hover:bg-white/10 hover:text-white"
+              }`}
             >
               {it.label}
             </button>
