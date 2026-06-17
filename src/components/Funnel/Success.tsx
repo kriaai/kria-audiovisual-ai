@@ -303,14 +303,6 @@ export default function Success({ data }: Props) {
             <MessageCircle className="h-5 w-5" />
             {enviando ? "Abrindo WhatsApp..." : "Continuar pelo WhatsApp"}
           </button>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/diagnostico-pdf" })}
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-purple-600 px-7 py-4 text-base font-bold text-white shadow-xl shadow-purple-600/30 transition hover:scale-[1.02] hover:bg-purple-700"
-          >
-            <FileText className="h-5 w-5" />
-            Quero meu diagnóstico em PDF
-          </button>
         </div>
         <p className="text-xs text-muted-foreground">
           Sua mensagem no WhatsApp já vai com o resumo do diagnóstico e os pacotes escolhidos.
