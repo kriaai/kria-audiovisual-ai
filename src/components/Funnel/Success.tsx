@@ -1,6 +1,5 @@
-import { Check, MessageCircle, FileText, Sparkles, Star, TrendingUp, AlertTriangle, Lightbulb } from "lucide-react";
+import { Check, MessageCircle, Sparkles, Star, TrendingUp, AlertTriangle, Lightbulb } from "lucide-react";
 import type { FunnelData } from "./Funnel";
-import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { calcScores, scoreKria, recomendar, classificarLead, type Pacote } from "./packages";
 
@@ -41,6 +40,7 @@ function buildMensagemWhats(
     ``,
     `*Nome:* ${primeiroNome}`,
     `*Instagram:* ${d.instagram}`,
+    `*E-mail:* ${d.email}`,
     `*Segmento:* ${d.segmento}`,
     `*Score Kria:* ${total}/100`,
     ``,
@@ -112,7 +112,6 @@ function PacoteCard({
 }
 
 export default function Success({ data }: Props) {
-  const navigate = useNavigate();
   const scores = useMemo(() => calcScores(data), [data]);
   const total = useMemo(() => scoreKria(scores), [scores]);
   const rec = useMemo(() => recomendar(data, scores), [data, scores]);
@@ -137,9 +136,11 @@ export default function Success({ data }: Props) {
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           _subject: `🛒 Seleção de pacotes — ${data.nome} | Score ${total}`,
+          tipoFormulario: "Diagnóstico Kria AI",
           tipo: "Seleção de pacotes após diagnóstico",
           nome: data.nome,
           whatsapp: data.whatsapp,
+          email: data.email,
           instagram: data.instagram,
           segmento: data.segmento,
           scoreKria: total,
