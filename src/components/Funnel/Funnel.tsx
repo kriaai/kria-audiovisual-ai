@@ -11,6 +11,7 @@ export type FunnelData = {
   // Etapa 1 - Identificação
   nome: string;
   whatsapp: string;
+  email: string;
   instagram: string;
   // Etapa 2 - Negócio
   segmento: string;
@@ -45,6 +46,7 @@ export type FunnelData = {
 const initial: FunnelData = {
   nome: "",
   whatsapp: "",
+  email: "",
   instagram: "",
   segmento: "",
   tempoNegocio: "",
