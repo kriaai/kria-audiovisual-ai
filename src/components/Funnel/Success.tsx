@@ -93,26 +93,49 @@ function recomendar(d: FunnelData, s: Scores) {
   };
 }
 
-function buildMensagem(d: FunnelData, s: Scores, servico: string, resumo: string) {
+function buildMensagemWhats(d: FunnelData, s: Scores, servico: string, total: number): string {
+  const primeiroNome = d.nome.split(" ")[0] || d.nome;
+  const canais = d.canais.length > 0 ? d.canais.join(", ") : "nenhum canal específico";
+  const ferramentas = d.ferramentas.length > 0 ? d.ferramentas.join(", ") : "nenhuma ferramenta de IA ainda";
+
   return [
-    `*Novo Diagnóstico Kria Recebido* ✨`,
-    "",
-    `*Nome:* ${d.nome}`,
-    `*Instagram:* ${d.instagram}`,
-    `*Segmento:* ${d.segmento}`,
-    `*Faturamento:* ${d.faturamento}`,
-    `*Principal Problema:* ${d.situacao} — ${d.problemaUm}`,
-    `*Investimento em Marketing:* ${d.anuncios}`,
-    `*Serviço Recomendado:* ${servico}`,
-    "",
-    `*Score Kria:* ${scoreKria(s)}/100`,
+    `Olá, equipe Kria AI! 👋`,
+    ``,
+    `Meu nome é *${primeiroNome}* e acabei de fazer o diagnóstico no site de vocês.`,
+    ``,
+    `📋 *Sobre mim:*`,
+    `• Nome completo: ${d.nome}`,
+    `• Instagram: ${d.instagram}`,
+    `• WhatsApp: ${d.whatsapp}`,
+    `• Segmento: ${d.segmento}`,
+    `• Tempo de negócio: ${d.tempoNegocio}`,
+    `• Faturamento atual: ${d.faturamento}`,
+    ``,
+    `📣 *Como consigo clientes hoje:*`,
+    `• Canais: ${canais}`,
+    `• Anúncios pagos: ${d.anuncios}`,
+    `• Equipe/agência de marketing: ${d.equipeMkt}`,
+    `• Frequência de conteúdo: ${d.frequenciaConteudo} por semana`,
+    ``,
+    `🎬 *Estrutura de conteúdo:*`,
+    `• Grava vídeos: ${d.gravaVideos}`,
+    `• Equipamento: ${d.equipamento}`,
+    `• Ferramentas que uso: ${ferramentas}`,
+    ``,
+    `⚠️ *Meu principal desafio:*`,
+    `• Situação: ${d.situacao}`,
+    `• O que quero resolver: ${d.problemaUm}`,
+    ``,
+    `📊 *Meu Score Kria: ${total}/100*`,
     `• Marketing: ${s.marketing}%`,
     `• Conteúdo: ${s.conteudo}%`,
     `• Automação: ${s.automacao}%`,
     `• Posicionamento: ${s.posicionamento}%`,
     `• Vendas: ${s.vendas}%`,
-    "",
-    `*Resumo:* ${resumo}`,
+    ``,
+    `💡 *Serviço recomendado pela IA:* ${servico}`,
+    ``,
+    `Gostaria de receber uma proposta personalizada para o meu negócio. 🚀`,
   ].join("\n");
 }
 
