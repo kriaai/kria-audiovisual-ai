@@ -3,7 +3,7 @@ import { WHATSAPP_NUMBER } from "@/lib/contact";
 
 export default function FloatingActions() {
   const goFunil = () => {
-    const el = document.getElementById("funil");
+    const el = document.getElementById("diagnostico-kria") ?? document.getElementById("funil");
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 

@@ -361,6 +361,7 @@ export default function Funnel() {
   if (done) {
     return (
       <section id="funil" ref={sectionRef} className="px-6 py-16 md:py-24">
+        <span id="diagnostico-kria" aria-hidden />
         <Success data={data} />
       </section>
     );
@@ -381,6 +382,7 @@ export default function Funnel() {
 
   return (
     <section id="funil" ref={sectionRef} className="relative px-6 py-16 md:py-24">
+      <span id="diagnostico-kria" className="block -translate-y-24" aria-hidden />
       <div className="mx-auto max-w-3xl">
         {/* Cabeçalho da seção */}
         <div className="mb-10 text-center">

@@ -52,7 +52,7 @@ export default function Hero() {
 
             <div className="mt-8 flex flex-wrap gap-3">
               <button
-                onClick={() => scrollTo("funil")}
+                onClick={() => scrollTo("diagnostico-kria")}
                 className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-4 text-base font-bold text-accent-foreground shadow-xl shadow-accent/40 ring-1 ring-accent/40 transition hover:scale-[1.03] hover:shadow-2xl hover:shadow-accent/50 active:scale-95"
               >
                 <Sparkles className="h-4 w-4" />

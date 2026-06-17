@@ -134,6 +134,26 @@
 }
 @utility animate-float-pill { animation: float-pill 5s ease-in-out infinite; }
 
+/* Faixa de transição roxo → branco */
+@utility section-gradient-transition {
+  --kria-transition-from: oklch(0.22 0.18 305);
+  --kria-transition-to: oklch(0.99 0 0);
+  background: linear-gradient(
+    180deg,
+    var(--kria-transition-from) 0%,
+    oklch(0.32 0.20 305) 30%,
+    oklch(0.78 0.10 305 / 0.6) 70%,
+    var(--kria-transition-to) 100%
+  );
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@utility animate-marquee { animation: marquee 38s linear infinite; }
+@utility animate-marquee-slow { animation: marquee 55s linear infinite; }
+
 @layer base {
   * { border-color: var(--color-border); }
   html { font-family: var(--font-sans); scroll-behavior: smooth; }

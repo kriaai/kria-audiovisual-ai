@@ -2,7 +2,7 @@ import { MessageCircle, Star } from "lucide-react";
 import { waLink } from "@/lib/contact";
 
 const MSG =
-  "Olá Gabbe! Tenho interesse em uma consultoria personalizada com você (fundadora da Kria AI).";
+  "Olá, Gabbe! Tenho interesse em agendar uma consultoria com a Kria AI e quero entender como você pode me orientar estrategicamente no meu negócio.";
 
 export default function ConsultoriaGabbe() {
   return (
@@ -31,7 +31,7 @@ export default function ConsultoriaGabbe() {
             className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-black text-primary-foreground shadow-lg shadow-primary/20 transition hover:scale-[1.02] hover:bg-primary-deep"
           >
             <MessageCircle className="h-5 w-5" />
-            Falar com a Gabbe
+            Agendar consultoria
           </a>
         </div>
       </div>

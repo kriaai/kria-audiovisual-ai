@@ -5,7 +5,8 @@ import { WHATSAPP_NUMBER } from "@/lib/contact";
 
 const ITEMS: { label: string; target: string }[] = [
   { label: "Início", target: "topo" },
-  { label: "Diagnóstico", target: "funil" },
+  { label: "O que é", target: "o-que-e-kria" },
+  { label: "Diagnóstico", target: "diagnostico-kria" },
   { label: "Soluções", target: "solucoes" },
   { label: "Casos", target: "casos" },
   { label: "Nossos Krias", target: "krias" },
