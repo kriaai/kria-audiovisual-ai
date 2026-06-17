@@ -151,13 +151,14 @@
 
 /* Faixa de transição roxo → branco */
 @utility section-gradient-transition {
-  --kria-transition-from: oklch(0.22 0.18 305);
-  --kria-transition-to: oklch(0.99 0 0);
+  --kria-transition-from: oklch(0.16 0.14 300);
+  --kria-transition-to: oklch(0.97 0 0);
   background: linear-gradient(
     180deg,
     var(--kria-transition-from) 0%,
-    oklch(0.32 0.20 305) 30%,
-    oklch(0.78 0.10 305 / 0.6) 70%,
+    oklch(0.22 0.18 305) 25%,
+    oklch(0.45 0.18 305) 55%,
+    oklch(0.82 0.08 305 / 0.85) 80%,
     var(--kria-transition-to) 100%
   );
 }
