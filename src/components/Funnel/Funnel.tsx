@@ -227,7 +227,12 @@ export default function Funnel() {
   const canContinue = (() => {
     switch (step) {
       case 1:
-        return data.nome.trim().length >= 2 && isWhats(data.whatsapp) && data.instagram.trim().length >= 2;
+        return (
+          data.nome.trim().length >= 2 &&
+          isWhats(data.whatsapp) &&
+          /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim()) &&
+          data.instagram.trim().length >= 2
+        );
       case 2:
         return !!data.segmento && !!data.tempoNegocio && !!data.faturamento;
       case 3:
@@ -254,9 +259,11 @@ export default function Funnel() {
     setSubmitting(true);
     const payload = {
       _subject: `🎯 Diagnóstico Kria — ${data.nome} | ${data.segmento} | Fat: ${data.faturamento}`,
+      tipoFormulario: "Diagnóstico Kria AI",
       "DADOS PESSOAIS": "---",
       nome: data.nome,
       whatsapp: data.whatsapp,
+      email: data.email,
       instagram: data.instagram,
       "NEGÓCIO": "---",
       segmento: data.segmento,
