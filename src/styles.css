@@ -81,6 +81,21 @@
     linear-gradient(135deg, oklch(0.22 0.18 305), oklch(0.16 0.14 300));
 }
 
+/* Hero premium: fundo quase preto com bloom roxo */
+@utility hero-premium {
+  background:
+    radial-gradient(60% 40% at 50% 0%, oklch(0.35 0.22 305 / 0.55), transparent 70%),
+    linear-gradient(180deg, oklch(0.10 0.06 295) 0%, oklch(0.14 0.10 300) 60%, oklch(0.16 0.14 300) 100%);
+}
+
+/* Arco/halo de luz no topo do hero (referência fintech) */
+@utility hero-halo {
+  background:
+    radial-gradient(closest-side, transparent 58%, oklch(0.78 0.22 305 / 0.9) 61.5%, oklch(0.55 0.24 305 / 0.5) 65%, transparent 72%);
+  filter: blur(2px);
+  opacity: 0.95;
+}
+
 @utility text-gradient-brand {
   background: linear-gradient(90deg, oklch(0.99 0 0), oklch(0.85 0.12 50));
   -webkit-background-clip: text;
@@ -136,13 +151,14 @@
 
 /* Faixa de transição roxo → branco */
 @utility section-gradient-transition {
-  --kria-transition-from: oklch(0.22 0.18 305);
-  --kria-transition-to: oklch(0.99 0 0);
+  --kria-transition-from: oklch(0.16 0.14 300);
+  --kria-transition-to: oklch(0.97 0 0);
   background: linear-gradient(
     180deg,
     var(--kria-transition-from) 0%,
-    oklch(0.32 0.20 305) 30%,
-    oklch(0.78 0.10 305 / 0.6) 70%,
+    oklch(0.22 0.18 305) 25%,
+    oklch(0.45 0.18 305) 55%,
+    oklch(0.82 0.08 305 / 0.85) 80%,
     var(--kria-transition-to) 100%
   );
 }

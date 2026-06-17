@@ -49,13 +49,14 @@ export default function NicheCarousel() {
               {LOOP.map(({ icon: Icon, name, tag }, i) => (
                 <article
                   key={`${name}-${i}`}
-                  className="glass-card flex w-[220px] shrink-0 flex-col gap-2 rounded-2xl p-4 text-left shadow-lg ring-1 ring-white/15 md:w-[260px]"
+                  className="group/card relative flex w-[220px] shrink-0 flex-col gap-3 overflow-hidden rounded-2xl border border-white/15 bg-white/[0.06] p-5 text-left shadow-[0_8px_30px_-10px_rgba(0,0,0,0.5)] backdrop-blur-xl transition hover:-translate-y-1 hover:border-accent/50 hover:bg-white/[0.10] md:w-[260px]"
                 >
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent/20 text-accent ring-1 ring-accent/30">
+                  <span className="pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full bg-accent/20 blur-2xl transition group-hover/card:bg-accent/40" />
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-accent/30 to-fuchsia-500/20 text-accent ring-1 ring-accent/40 shadow-[0_0_20px_-4px_oklch(0.72_0.21_45/.6)]">
                     <Icon className="h-5 w-5" />
                   </span>
-                  <div className="text-sm font-black tracking-tight text-foreground">{name}</div>
-                  <p className="text-xs leading-relaxed text-muted-foreground">{tag}</p>
+                  <div className="text-base font-black tracking-tight text-white">{name}</div>
+                  <p className="text-xs leading-relaxed text-white/70">{tag}</p>
                 </article>
               ))}
             </div>
