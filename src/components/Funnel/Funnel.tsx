@@ -269,7 +269,29 @@ export default function Funnel() {
           {step === 2 && (
             <div className="space-y-7">
               <Field label="Qual é o seu segmento?">
-                <Chips options={SEGMENTOS} value={data.segmento} onSelect={(v) => update("segmento", v)} />
+                <div className="grid gap-2.5 sm:grid-cols-2">
+                  {SEGMENTOS.map((s) => {
+                    const active = data.segmento === s.value;
+                    return (
+                      <button
+                        key={s.value}
+                        type="button"
+                        onClick={() => update("segmento", s.value)}
+                        className={`flex items-start gap-3 rounded-2xl border p-4 text-left transition ${
+                          active
+                            ? "border-primary bg-primary/10 shadow-md shadow-primary/10"
+                            : "border-border bg-card hover:border-primary/50 hover:bg-primary/5"
+                        }`}
+                      >
+                        <span className="text-2xl leading-none">{s.icon}</span>
+                        <span className="min-w-0">
+                          <span className="block text-sm font-bold text-foreground">{s.titulo}</span>
+                          <span className="mt-0.5 block text-xs text-muted-foreground">{s.sub}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </Field>
               <Field label="Há quanto tempo seu negócio existe?">
                 <Chips options={TEMPOS} value={data.tempoNegocio} onSelect={(v) => update("tempoNegocio", v)} />
