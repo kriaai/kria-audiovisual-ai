@@ -1,10 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Hero from "@/components/Hero";
-import Positioning from "@/components/Positioning";
+import NicheCarousel from "@/components/NicheCarousel";
+import WhatKria from "@/components/WhatKria";
 import DiagnosticoHighlight from "@/components/DiagnosticoHighlight";
-import ConsultoriaGabbe from "@/components/ConsultoriaGabbe";
 import Funnel from "@/components/Funnel/Funnel";
+import ConsultoriaGabbe from "@/components/ConsultoriaGabbe";
 import Casos from "@/components/Casos";
+import BrandLogoMarquee from "@/components/BrandLogoMarquee";
+import Positioning from "@/components/Positioning";
 import Partners from "@/components/Partners";
 import Clube from "@/components/Clube";
 import Footer from "@/components/Footer";
@@ -25,11 +28,14 @@ function Index() {
   return (
     <main className="min-h-screen bg-background">
       <Hero />
-      <Funnel />
-      <Positioning />
+      <NicheCarousel />
+      <WhatKria />
       <DiagnosticoHighlight />
+      <Funnel />
       <ConsultoriaGabbe />
       <Casos />
+      <BrandLogoMarquee />
+      <Positioning />
       <Partners />
       <Clube />
       <Footer />

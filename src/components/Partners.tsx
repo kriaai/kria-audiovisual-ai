@@ -24,14 +24,15 @@ const PARTNERS: Partner[] = [
     whatsappMessage: "Olá Kria! Tenho interesse no parceiro Veropa Filmes — pode me conectar?",
   },
   {
-    name: "Mais Brasil",
-    short: "MB",
-    especialidade: "Marketing & ativações",
+    name: "UMAZ Brasil",
+    short: "UMZ",
+    especialidade: "Eventos e casting",
     cidade: "Belém · PA",
-    categoria: "Tráfego",
-    servicos: ["Estratégia", "Tráfego pago", "Ativações"],
-    description: "Marketing, estratégia e ativações que aproximam marcas do público.",
-    whatsappMessage: "Olá Kria! Tenho interesse no parceiro Mais Brasil — pode me conectar?",
+    categoria: "Eventos e Casting",
+    servicos: ["Produção de eventos", "Casting", "Ativações"],
+    description:
+      "Produção de eventos, casting, ativações e conexões criativas para marcas e projetos.",
+    whatsappMessage: "Olá Kria! Tenho interesse no parceiro UMAZ Brasil — pode me conectar?",
   },
   {
     name: "Troika",
