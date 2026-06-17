@@ -361,6 +361,10 @@ export default function Funnel() {
                 <Input id="whatsapp" value={data.whatsapp} onChange={(e) => update("whatsapp", e.target.value)} placeholder="(91) 99999-9999" className="mt-1.5 h-12" maxLength={20} />
               </div>
               <div>
+                <Label htmlFor="email">E-mail</Label>
+                <Input id="email" type="email" value={data.email} onChange={(e) => update("email", e.target.value)} placeholder="seuemail@exemplo.com" className="mt-1.5 h-12" maxLength={120} />
+              </div>
+              <div>
                 <Label htmlFor="instagram">Instagram</Label>
                 <Input id="instagram" value={data.instagram} onChange={(e) => update("instagram", e.target.value)} placeholder="@seu_perfil" className="mt-1.5 h-12" maxLength={60} />
               </div>
