@@ -4,6 +4,10 @@ export type Pacote = {
   id: string;
   nome: string;
   preco: string;
+  /** Valor base usado para estimativa quando o preço é "a partir de". */
+  valorBase: number;
+  /** true quando o serviço requer atendimento presencial. */
+  presencial?: boolean;
   descricao: string;
 };
 
@@ -12,90 +16,106 @@ export const CATALOGO: Record<string, Pacote> = {
     id: "conteudo",
     nome: "Plano Conteúdo Kria",
     preco: "R$ 500",
+    valorBase: 500,
     descricao: "12 templates no Canva, identidade visual adaptada, temas, legendas e calendário de postagem.",
   },
   bancoIA: {
     id: "bancoIA",
     nome: "Banco de Referência IA",
     preco: "R$ 150",
+    valorBase: 150,
     descricao: "Book visual com fotos em vários ângulos e prompt mestre para criação de imagens e vídeos com IA.",
   },
   landing: {
     id: "landing",
     nome: "Landing Page Kria",
     preco: "A partir de R$ 1.000",
+    valorBase: 1000,
     descricao: "Página estratégica para apresentação da oferta e conversão em leads.",
   },
   prompts: {
     id: "prompts",
     nome: "Pack de Prompts Personalizado",
     preco: "A partir de R$ 80",
+    valorBase: 80,
     descricao: "Prompts criados sob medida para o seu negócio acelerar a produção com IA.",
   },
   captacao: {
     id: "captacao",
     nome: "Captação de Vídeo",
     preco: "R$ 180/hora",
-    descricao: "Captação profissional de vídeos para conteúdo e campanhas.",
+    valorBase: 180,
+    presencial: true,
+    descricao: "Captação profissional de vídeos para conteúdo e campanhas (presencial — PA).",
   },
   edicao: {
     id: "edicao",
     nome: "Edição de Vídeo",
     preco: "R$ 90/minuto",
+    valorBase: 90,
     descricao: "Edição com direção própria e até 1 alteração inclusa.",
   },
   edicaoTerceiros: {
     id: "edicaoTerceiros",
     nome: "Edição com Direção de Terceiros",
     preco: "R$ 150/minuto",
+    valorBase: 150,
     descricao: "Edição seguindo direção, briefing ou roteiro de terceiros.",
   },
   bookIA: {
     id: "bookIA",
     nome: "Book Fotográfico IA",
     preco: "R$ 25 por foto",
-    descricao: "Fotos geradas com IA para imagem pessoal, conteúdo ou marca.",
+    valorBase: 250,
+    descricao: "Fotos geradas com IA para imagem pessoal, conteúdo ou marca (estimativa para 10 fotos).",
   },
   projetoIA: {
     id: "projetoIA",
     nome: "Projeto com IA",
     preco: "A partir de R$ 50",
+    valorBase: 50,
     descricao: "Criação visual ou conceitual com IA, conforme complexidade.",
   },
   roteiro: {
     id: "roteiro",
     nome: "Roteiro Personalizado",
     preco: "R$ 70",
+    valorBase: 70,
     descricao: "Roteiro estratégico para vídeo, apresentação ou conteúdo.",
   },
   logo: {
     id: "logo",
     nome: "Logomarca e Identidade Visual",
     preco: "A partir de R$ 300",
+    valorBase: 300,
     descricao: "Criação de marca visual com prazo de até 1 mês.",
   },
   workshopIA: {
     id: "workshopIA",
     nome: "Workshop IA Online",
     preco: "R$ 450",
+    valorBase: 450,
     descricao: "Aula online sobre uso de IA para produtividade, marketing e criação.",
   },
   workshopConteudo: {
     id: "workshopConteudo",
     nome: "Workshop Kria Conteúdo",
     preco: "R$ 250",
+    valorBase: 250,
     descricao: "Aula online para aprender a criar conteúdo com método e IA.",
   },
   consultoria: {
     id: "consultoria",
     nome: "Consultoria Kria AI",
     preco: "R$ 350",
+    valorBase: 350,
     descricao: "Sessão estratégica online personalizada para destravar o próximo passo.",
   },
   bio: {
     id: "bio",
     nome: "Bio Magnética",
     preco: "R$ 150",
+    valorBase: 150,
     descricao: "Bio estratégica para Instagram com posicionamento e chamada para ação.",
   },
 };
@@ -108,15 +128,20 @@ export type Scores = {
   aquisicao: number;
 };
 
+const has = (arr: string[] | undefined, v: string) => !!arr && arr.includes(v);
+
 export function calcScores(d: FunnelData): Scores {
+  const dif = d.dificuldadesConteudo || [];
+  const sit = d.situacoes || [];
+
   // Conteúdo
   const freqMap: Record<string, number> = {
     "Todo dia": 80, "3 a 5 vezes": 60, "1 a 2 vezes": 40, "Quase nunca": 20, "Nunca": 5,
   };
   let conteudo = freqMap[d.frequenciaConteudo] ?? 15;
   if (d.gravaVideos === "Sim") conteudo += 10;
-  if (d.dificuldadeConteudo === "Falta de tempo") conteudo -= 15;
-  if (d.dificuldadeConteudo === "Não tenho dificuldade") conteudo += 10;
+  if (has(dif, "Falta de tempo")) conteudo -= 15;
+  if (has(dif, "Não tenho dificuldade")) conteudo += 10;
   if (d.apareceEmVideos === "Não") conteudo -= 5;
   conteudo = Math.max(5, Math.min(conteudo, 95));
 
@@ -126,7 +151,7 @@ export function calcScores(d: FunnelData): Scores {
   };
   let autoridade = tempoMap[d.tempoNegocio] ?? 25;
   if (d.frequenciaConteudo === "Todo dia" || d.frequenciaConteudo === "3 a 5 vezes") autoridade += 10;
-  if (d.situacao === "Meu negócio não aparece") autoridade -= 15;
+  if (has(sit, "Meu negócio não aparece")) autoridade -= 15;
   autoridade = Math.max(10, Math.min(autoridade, 95));
 
   // Presença Digital
@@ -177,10 +202,25 @@ export type Recomendacao = {
   oportunidades: string[];
 };
 
+const PARA_CIDADES = [
+  "belém", "belem", "ananindeua", "marituba", "benevides",
+  "icoaraci", "castanhal",
+];
+
+function podePresencial(d: FunnelData): boolean {
+  if ((d.estado || "").toUpperCase() === "PA") return true;
+  const cid = (d.cidade || "").trim().toLowerCase();
+  return PARA_CIDADES.some((c) => cid.includes(c));
+}
+
 export function recomendar(d: FunnelData, s: Scores): Recomendacao {
+  const dif = d.dificuldadesConteudo || [];
+  const sit = d.situacoes || [];
+  const presencialOk = podePresencial(d);
+
   const semTempo =
-    d.situacao === "Não tenho tempo" ||
-    d.dificuldadeConteudo === "Falta de tempo" ||
+    has(sit, "Não tenho tempo") ||
+    has(dif, "Falta de tempo") ||
     d.frequenciaConteudo === "Quase nunca" ||
     d.frequenciaConteudo === "Nunca";
 
@@ -188,8 +228,8 @@ export function recomendar(d: FunnelData, s: Scores): Recomendacao {
   const usaIA = d.ferramentas.some((f) => ["ChatGPT", "Gemini", "Claude", "IA para imagens"].includes(f));
   const semSite = d.possuiSite === "Não";
   const precisaPosicionamento =
-    d.situacao === "Meu negócio não aparece" ||
-    d.situacao === "Tenho seguidores mas vendo pouco" ||
+    has(sit, "Meu negócio não aparece") ||
+    has(sit, "Tenho seguidores mas vendo pouco") ||
     s.autoridade < 40;
   const investAlto =
     d.faixaInvestimento === "R$ 1.000 a R$ 3.000" || d.faixaInvestimento === "Acima de R$ 3.000";
@@ -205,9 +245,9 @@ export function recomendar(d: FunnelData, s: Scores): Recomendacao {
   } else if (semSite && investAlto) {
     principalId = "landing";
     motivo = "Indicado porque você não possui site e tem orçamento para transformar visitantes em leads.";
-  } else if (naoGrava && !d.apareceEmVideos.startsWith("Não")) {
+  } else if (naoGrava && d.apareceEmVideos !== "Não" && presencialOk) {
     principalId = "captacao";
-    motivo = "Indicado porque você não grava vídeos hoje e isso limita seu alcance.";
+    motivo = "Indicado porque você não grava vídeos hoje e está em região atendida presencialmente pela Kria.";
   } else if (d.apareceEmVideos === "Não") {
     principalId = "bancoIA";
     motivo = "Indicado porque você prefere não aparecer em vídeos — vamos criar com IA mantendo sua identidade.";
@@ -220,14 +260,20 @@ export function recomendar(d: FunnelData, s: Scores): Recomendacao {
   } else if (usaIA) {
     principalId = "bancoIA";
     motivo = "Indicado porque você já usa IA e pode elevar a qualidade das imagens geradas.";
-  } else if (d.dificuldadeConteudo === "Falta de ideias") {
+  } else if (has(dif, "Falta de ideias")) {
     principalId = "prompts";
     motivo = "Indicado porque sua maior dificuldade é gerar ideias — vamos resolver com prompts personalizados.";
   }
 
+  // Garante que principal não seja presencial fora do PA
+  if (!presencialOk && CATALOGO[principalId]?.presencial) {
+    principalId = "conteudo";
+    motivo = "Como você está fora do Pará, priorizamos uma solução 100% digital para começar agora.";
+  }
+
   const principal = CATALOGO[principalId];
 
-  // Adicionais compatíveis (até 4, sem repetir o principal)
+  // Adicionais compatíveis (até 4)
   const candidatos: string[] = [];
   if (semTempo) candidatos.push("bancoIA", "consultoria", "bio");
   if (naoGrava) candidatos.push("captacao", "workshopConteudo");
@@ -235,24 +281,27 @@ export function recomendar(d: FunnelData, s: Scores): Recomendacao {
   if (precisaPosicionamento) candidatos.push("bio", "consultoria", "logo");
   if (semSite) candidatos.push("landing");
   if (d.possuiWhatsappBusiness === "Não") candidatos.push("consultoria");
-  if (d.dificuldadeConteudo === "Falta de ideias") candidatos.push("prompts", "consultoria");
-  if (d.dificuldadeConteudo === "Vergonha de aparecer") candidatos.push("bancoIA", "bookIA");
-  if (d.dificuldadeConteudo === "Não sei gravar") candidatos.push("captacao", "workshopConteudo");
-  if (d.dificuldadeConteudo === "Não sei editar") candidatos.push("edicao");
+  if (has(dif, "Falta de ideias")) candidatos.push("prompts", "consultoria");
+  if (has(dif, "Vergonha de aparecer")) candidatos.push("bancoIA", "bookIA");
+  if (has(dif, "Não sei gravar")) candidatos.push("captacao", "workshopConteudo");
+  if (has(dif, "Não sei editar")) candidatos.push("edicao");
   if (d.objetivo90dias === "Lançar um produto ou serviço") candidatos.push("landing", "roteiro");
   if (d.objetivo90dias === "Fortalecer minha marca") candidatos.push("logo", "bio");
   if (d.objetivo90dias === "Automatizar processos") candidatos.push("prompts", "workshopIA");
   // fallback variety
-  candidatos.push("consultoria", "bio", "bancoIA", "captacao");
+  candidatos.push("consultoria", "bio", "bancoIA", "prompts", "workshopConteudo", "logo");
 
   const adicionais: Pacote[] = [];
   const seen = new Set<string>([principalId]);
   for (const id of candidatos) {
     if (adicionais.length >= 4) break;
     if (seen.has(id)) continue;
-    if (!CATALOGO[id]) continue;
+    const p = CATALOGO[id];
+    if (!p) continue;
+    // Filtra presenciais quando fora do PA
+    if (!presencialOk && p.presencial) continue;
     seen.add(id);
-    adicionais.push(CATALOGO[id]);
+    adicionais.push(p);
   }
 
   // Pontos fortes / Gargalos / Oportunidades
@@ -286,4 +335,12 @@ export function classificarLead(urgencia: string): string {
     case "Ainda estou pesquisando": return "Frio";
     default: return "Indefinido";
   }
+}
+
+export function somarSelecionados(pacotes: Pacote[]): number {
+  return pacotes.reduce((acc, p) => acc + (p.valorBase || 0), 0);
+}
+
+export function formatBRL(v: number): string {
+  return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
 }
