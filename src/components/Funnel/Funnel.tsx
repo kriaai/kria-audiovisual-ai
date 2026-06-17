@@ -192,12 +192,30 @@ export default function Funnel() {
   const submit = async () => {
     setSubmitting(true);
     const payload = {
-      _subject: `Diagnóstico Kria — ${data.nome} (${data.segmento})`,
-      ...data,
+      _subject: `🎯 Diagnóstico Kria — ${data.nome} | ${data.segmento} | Fat: ${data.faturamento}`,
+      "DADOS PESSOAIS": "---",
+      nome: data.nome,
+      whatsapp: data.whatsapp,
+      instagram: data.instagram,
+      "NEGÓCIO": "---",
+      segmento: data.segmento,
+      tempoNegocio: data.tempoNegocio,
+      faturamento: data.faturamento,
+      "MARKETING": "---",
       canais: data.canais.join(", "),
+      anuncios: data.anuncios,
+      equipeMkt: data.equipeMkt,
+      frequenciaConteudo: data.frequenciaConteudo,
+      "CONTEÚDO": "---",
+      gravaVideos: data.gravaVideos,
+      equipamento: data.equipamento,
       ferramentas: data.ferramentas.join(", "),
+      "DESAFIO": "---",
+      situacao: data.situacao,
+      problemaUm: data.problemaUm,
+      "META": "---",
       origem: "Diagnóstico Kria AI",
-      dataEnvio: new Date().toISOString(),
+      dataEnvio: new Date().toLocaleString("pt-BR", { timeZone: "America/Belem" }),
     };
     try {
       await fetch("https://formspree.io/f/xkoabjow", {
