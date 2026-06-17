@@ -118,6 +118,8 @@ export default function Hero() {
           </div>
         </div>
       </div>
+      {/* Transição sutil para a próxima seção */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[oklch(0.22_0.18_305)]" />
     </section>
   );
 }
