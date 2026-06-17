@@ -162,7 +162,7 @@ export default function Success({ data }: Props) {
   const total = scoreKria(scores);
   const rec = recomendar(data, scores);
   const primeiroNome = data.nome.split(" ")[0] || data.nome;
-  const mensagem = buildMensagem(data, scores, rec.servico, rec.diagnostico);
+  const mensagemWhats = buildMensagemWhats(data, scores, rec.servico, total);
 
   const [premiumLoading, setPremiumLoading] = useState(false);
   const [premiumSent, setPremiumSent] = useState(false);
@@ -251,7 +251,7 @@ export default function Success({ data }: Props) {
             type="button"
             onClick={() =>
               window.open(
-                `https://wa.me/5591985091584?text=${encodeURIComponent(mensagem)}`,
+                `https://wa.me/5591985091584?text=${encodeURIComponent(mensagemWhats)}`,
                 "_blank"
               )
             }
