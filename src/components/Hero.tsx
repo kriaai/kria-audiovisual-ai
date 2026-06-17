@@ -1,17 +1,7 @@
-import { CalendarCheck, Sparkles, MessageCircle, FileText, Wand2, Palette, Globe, Users } from "lucide-react";
+import { CalendarCheck, Sparkles } from "lucide-react";
 import kriaHero from "@/assets/kria-hero.png.asset.json";
 import BrandLogo from "@/components/BrandLogo";
 import { waLink } from "@/lib/contact";
-
-const floatingPills = [
-  { icon: FileText, label: "Conteúdo", pos: "left-[-1rem] top-6", delay: "0s" },
-  { icon: Wand2, label: "IA", pos: "right-[-1rem] top-16", delay: "0.6s" },
-  { icon: MessageCircle, label: "WhatsApp", pos: "left-[-2rem] top-1/2", delay: "1.2s" },
-  { icon: Palette, label: "Branding", pos: "right-[-2rem] top-1/3", delay: "0.4s" },
-  { icon: Globe, label: "Landing Page", pos: "right-[-1rem] bottom-32", delay: "0.9s" },
-  { icon: Sparkles, label: "Diagnóstico", pos: "left-[-1rem] bottom-24", delay: "1.5s" },
-  { icon: Users, label: "Parceiros Kria", pos: "right-2 bottom-10", delay: "0.2s" },
-];
 
 export default function Hero() {
   const scrollTo = (id: string) => {
@@ -26,10 +16,18 @@ export default function Hero() {
       <span className="blob animate-float bg-violet-400/30 h-80 w-80 left-1/3 bottom-[-6rem]" />
 
       <div className="relative mx-auto max-w-7xl px-6 pt-6 pb-24 md:pt-10 md:pb-32">
-        <div className="flex justify-center md:justify-start">
+        <div className="flex flex-col items-center gap-3 md:flex-row md:items-end md:justify-start md:gap-5">
           <div className="relative">
-            <span className="absolute -inset-6 -z-10 rounded-full bg-accent/20 blur-2xl" />
-            <BrandLogo size="lg" variant="onDark" className="md:h-20" />
+            <span className="absolute -inset-8 -z-10 rounded-full bg-accent/25 blur-3xl" />
+            <BrandLogo size="lg" variant="onDark" className="h-16 md:h-28" />
+          </div>
+          <div className="text-center md:text-left">
+            <div className="text-3xl font-black tracking-tight text-white md:text-5xl">
+              Kria <span className="text-accent">AI</span>
+            </div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/60">
+              Inteligência criativa
+            </div>
           </div>
         </div>
 
@@ -73,7 +71,7 @@ export default function Hero() {
             </p>
           </div>
 
-          {/* Foto da Kria + pills flutuantes */}
+          {/* Foto da Kria */}
           <div className="relative mx-auto w-full max-w-md">
             <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-accent/40 to-fuchsia-400/30 blur-2xl" />
             <div className="relative aspect-[3/4] overflow-hidden rounded-[2rem] ring-1 ring-white/15 shadow-2xl">
@@ -90,19 +88,8 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* Pills flutuantes ao redor */}
-            {floatingPills.map(({ icon: Icon, label, pos, delay }) => (
-              <div
-                key={label}
-                className={`pointer-events-none absolute ${pos} hidden md:block`}
-                style={{ animationDelay: delay }}
-              >
-                <div className="animate-float-pill inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md shadow-lg shadow-accent/20">
-                  <Icon className="h-3.5 w-3.5 text-accent" />
-                  {label}
-                </div>
-              </div>
-            ))}
+
+
 
             <a
               href={waLink(
@@ -131,6 +118,8 @@ export default function Hero() {
           </div>
         </div>
       </div>
+      {/* Transição sutil para a próxima seção */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[oklch(0.22_0.18_305)]" />
     </section>
   );
 }
