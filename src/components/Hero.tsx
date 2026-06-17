@@ -1,17 +1,7 @@
-import { CalendarCheck, Sparkles, MessageCircle, FileText, Wand2, Palette, Globe, Users } from "lucide-react";
+import { CalendarCheck, Sparkles } from "lucide-react";
 import kriaHero from "@/assets/kria-hero.png.asset.json";
 import BrandLogo from "@/components/BrandLogo";
 import { waLink } from "@/lib/contact";
-
-const floatingPills = [
-  { icon: FileText, label: "Conteúdo", pos: "left-[-1rem] top-6", delay: "0s" },
-  { icon: Wand2, label: "IA", pos: "right-[-1rem] top-16", delay: "0.6s" },
-  { icon: MessageCircle, label: "WhatsApp", pos: "left-[-2rem] top-1/2", delay: "1.2s" },
-  { icon: Palette, label: "Branding", pos: "right-[-2rem] top-1/3", delay: "0.4s" },
-  { icon: Globe, label: "Landing Page", pos: "right-[-1rem] bottom-32", delay: "0.9s" },
-  { icon: Sparkles, label: "Diagnóstico", pos: "left-[-1rem] bottom-24", delay: "1.5s" },
-  { icon: Users, label: "Parceiros Kria", pos: "right-2 bottom-10", delay: "0.2s" },
-];
 
 export default function Hero() {
   const scrollTo = (id: string) => {
