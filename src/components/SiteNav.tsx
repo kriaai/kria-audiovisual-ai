@@ -55,7 +55,7 @@ export default function SiteNav() {
           className="flex items-center"
           aria-label="Início"
         >
-          <BrandLogo size="md" variant="onDark" />
+          <BrandLogo size="md" variant={scrolled ? "default" : "onDark"} />
         </button>
 
         <nav className="hidden items-center gap-1 lg:flex">
