@@ -71,7 +71,7 @@ export default function Hero() {
             </p>
           </div>
 
-          {/* Foto da Kria + pills flutuantes */}
+          {/* Foto da Kria */}
           <div className="relative mx-auto w-full max-w-md">
             <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-accent/40 to-fuchsia-400/30 blur-2xl" />
             <div className="relative aspect-[3/4] overflow-hidden rounded-[2rem] ring-1 ring-white/15 shadow-2xl">
@@ -88,19 +88,8 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* Pills flutuantes ao redor */}
-            {floatingPills.map(({ icon: Icon, label, pos, delay }) => (
-              <div
-                key={label}
-                className={`pointer-events-none absolute ${pos} hidden md:block`}
-                style={{ animationDelay: delay }}
-              >
-                <div className="animate-float-pill inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md shadow-lg shadow-accent/20">
-                  <Icon className="h-3.5 w-3.5 text-accent" />
-                  {label}
-                </div>
-              </div>
-            ))}
+
+
 
             <a
               href={waLink(
