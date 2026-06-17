@@ -16,10 +16,18 @@ export default function Hero() {
       <span className="blob animate-float bg-violet-400/30 h-80 w-80 left-1/3 bottom-[-6rem]" />
 
       <div className="relative mx-auto max-w-7xl px-6 pt-6 pb-24 md:pt-10 md:pb-32">
-        <div className="flex justify-center md:justify-start">
+        <div className="flex flex-col items-center gap-3 md:flex-row md:items-end md:justify-start md:gap-5">
           <div className="relative">
-            <span className="absolute -inset-6 -z-10 rounded-full bg-accent/20 blur-2xl" />
-            <BrandLogo size="lg" variant="onDark" className="md:h-20" />
+            <span className="absolute -inset-8 -z-10 rounded-full bg-accent/25 blur-3xl" />
+            <BrandLogo size="lg" variant="onDark" className="h-16 md:h-28" />
+          </div>
+          <div className="text-center md:text-left">
+            <div className="text-3xl font-black tracking-tight text-white md:text-5xl">
+              Kria <span className="text-accent">AI</span>
+            </div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/60">
+              Inteligência criativa
+            </div>
           </div>
         </div>
 
