@@ -38,11 +38,13 @@ export default function SiteNav() {
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
+  const isLight = scrolled;
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-40 transition ${
         scrolled
-          ? "border-b border-white/10 bg-primary-deep/70 backdrop-blur-md shadow-lg shadow-primary/20"
+          ? "border-b border-white/40 bg-white/80 backdrop-blur-xl shadow-lg shadow-primary/10"
           : "bg-transparent"
       }`}
     >
