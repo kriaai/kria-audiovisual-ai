@@ -34,10 +34,6 @@ export default function DiagnosticoHighlight() {
                 e como começar agora.
               </p>
 
-              <div className="mt-6 inline-flex items-baseline gap-2 rounded-2xl bg-white/10 px-5 py-3 ring-1 ring-white/15 backdrop-blur">
-                <span className="text-xs font-semibold uppercase tracking-widest text-accent">100%</span>
-                <span className="text-4xl font-black">GRÁTIS</span>
-              </div>
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <button
