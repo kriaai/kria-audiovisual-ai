@@ -49,9 +49,12 @@ const initial: FunnelData = {
 
 const TOTAL = 5;
 
-const SEGMENTOS = [
-  "Restaurante", "Loja", "Moda", "Clínica", "Advogado",
-  "Corretor", "Estética", "Academia", "Personal", "Influenciador", "Outro",
+const SEGMENTOS: { value: string; icon: string; titulo: string; sub: string }[] = [
+  { value: "Médicos e Saúde", icon: "🏥", titulo: "Médicos e Saúde", sub: "Atrair pacientes e autoridade no digital" },
+  { value: "Políticos e Assessores", icon: "🏛️", titulo: "Políticos e Assessores", sub: "Comunicação estratégica e presença pública" },
+  { value: "Varejo e Comércio", icon: "🛍️", titulo: "Varejo e Comércio", sub: "Vender mais com conteúdo e tráfego" },
+  { value: "Influencers e Criadores", icon: "📱", titulo: "Influencers e Criadores", sub: "Crescer audiência e monetizar com IA" },
+  { value: "Eventos e Entretenimento", icon: "🎪", titulo: "Eventos e Entretenimento", sub: "Encher casa e gerar buzz nas redes" },
 ];
 const TEMPOS = ["Menos de 6 meses", "6 meses a 1 ano", "1 a 3 anos", "Mais de 3 anos"];
 const FATURAMENTOS = [
@@ -266,7 +269,29 @@ export default function Funnel() {
           {step === 2 && (
             <div className="space-y-7">
               <Field label="Qual é o seu segmento?">
-                <Chips options={SEGMENTOS} value={data.segmento} onSelect={(v) => update("segmento", v)} />
+                <div className="grid gap-2.5 sm:grid-cols-2">
+                  {SEGMENTOS.map((s) => {
+                    const active = data.segmento === s.value;
+                    return (
+                      <button
+                        key={s.value}
+                        type="button"
+                        onClick={() => update("segmento", s.value)}
+                        className={`flex items-start gap-3 rounded-2xl border p-4 text-left transition ${
+                          active
+                            ? "border-primary bg-primary/10 shadow-md shadow-primary/10"
+                            : "border-border bg-card hover:border-primary/50 hover:bg-primary/5"
+                        }`}
+                      >
+                        <span className="text-2xl leading-none">{s.icon}</span>
+                        <span className="min-w-0">
+                          <span className="block text-sm font-bold text-foreground">{s.titulo}</span>
+                          <span className="mt-0.5 block text-xs text-muted-foreground">{s.sub}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </Field>
               <Field label="Há quanto tempo seu negócio existe?">
                 <Chips options={TEMPOS} value={data.tempoNegocio} onSelect={(v) => update("tempoNegocio", v)} />

@@ -1,6 +1,6 @@
 import { Check, MessageCircle, FileText, Sparkles } from "lucide-react";
 import type { FunnelData } from "./Funnel";
-import { waLink } from "@/lib/contact";
+import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -134,6 +134,7 @@ function Bar({ label, value }: { label: string; value: number }) {
 }
 
 export default function Success({ data }: Props) {
+  const navigate = useNavigate();
   const scores = calcScores(data);
   const total = scoreKria(scores);
   const rec = recomendar(data, scores);
@@ -220,18 +221,34 @@ export default function Success({ data }: Props) {
         </div>
       </div>
 
-      {/* CTA WHATSAPP */}
-      <div className="mt-8 flex flex-col items-center gap-3 text-center">
-        <button
-          type="button"
-          onClick={() => window.open(waLink(mensagem), "_blank")}
-          className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-7 py-4 text-base font-bold text-white shadow-xl shadow-emerald-500/30 transition hover:scale-[1.02] hover:bg-emerald-600"
-        >
-          <MessageCircle className="h-5 w-5" />
-          Falar com a Kria no WhatsApp
-        </button>
-        <p className="text-xs text-muted-foreground">Sua resposta vai com o resumo completo do diagnóstico.</p>
+      {/* CTAs */}
+      <div className="mt-8 flex flex-col items-center gap-4 text-center">
+        <div className="flex w-full flex-col gap-3 sm:flex-row sm:justify-center">
+          <button
+            type="button"
+            onClick={() =>
+              window.open(
+                `https://wa.me/5591985091584?text=${encodeURIComponent(mensagem)}`,
+                "_blank"
+              )
+            }
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-500 px-7 py-4 text-base font-bold text-white shadow-xl shadow-emerald-500/30 transition hover:scale-[1.02] hover:bg-emerald-600"
+          >
+            <MessageCircle className="h-5 w-5" />
+            Falar no WhatsApp
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/diagnostico-pdf" })}
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-purple-600 px-7 py-4 text-base font-bold text-white shadow-xl shadow-purple-600/30 transition hover:scale-[1.02] hover:bg-purple-700"
+          >
+            <FileText className="h-5 w-5" />
+            Quero meu diagnóstico em PDF
+          </button>
+        </div>
+        <p className="text-xs text-muted-foreground">Sua resposta no WhatsApp vai com o resumo completo do diagnóstico.</p>
       </div>
+
 
       {/* PDF PREMIUM */}
       <div className="mt-10 rounded-3xl border-2 border-dashed border-primary/30 bg-primary/5 p-7 text-center md:p-10">
