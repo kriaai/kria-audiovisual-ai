@@ -134,6 +134,7 @@ function Bar({ label, value }: { label: string; value: number }) {
 }
 
 export default function Success({ data }: Props) {
+  const navigate = useNavigate();
   const scores = calcScores(data);
   const total = scoreKria(scores);
   const rec = recomendar(data, scores);
