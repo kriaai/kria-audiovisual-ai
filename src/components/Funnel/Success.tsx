@@ -1,7 +1,10 @@
 import { Check, MessageCircle, Sparkles, Star, TrendingUp, AlertTriangle, Lightbulb } from "lucide-react";
 import type { FunnelData } from "./Funnel";
 import { useMemo, useState } from "react";
-import { calcScores, scoreKria, recomendar, classificarLead, type Pacote } from "./packages";
+import {
+  calcScores, scoreKria, recomendar, classificarLead,
+  somarSelecionados, formatBRL, type Pacote,
+} from "./packages";
 
 type Props = { data: FunnelData };
 
@@ -22,50 +25,58 @@ function Bar({ label, value }: { label: string; value: number }) {
   );
 }
 
+function segmentoTexto(d: FunnelData): string {
+  const base = (d.segmentos || []).filter((s) => s !== "Outro");
+  if ((d.segmentos || []).includes("Outro") && d.segmentoOutro?.trim()) {
+    base.push(`Outro: ${d.segmentoOutro.trim()}`);
+  }
+  return base.join(" · ") || "—";
+}
+
 function buildMensagemWhats(
   d: FunnelData,
   total: number,
   principal: Pacote,
-  selecionados: Pacote[]
+  selecionados: Pacote[],
+  valorTotal: number,
 ): string {
-  const primeiroNome = d.nome.split(" ")[0] || d.nome;
   const lista = selecionados.length > 0
     ? selecionados.map((p) => `• ${p.nome} — ${p.preco}`).join("\n")
     : "• (nenhum selecionado ainda)";
 
   return [
-    `Olá, equipe Kria AI! 👋`,
+    `Olá, Kria AI! ✨`,
     ``,
-    `Acabei de concluir meu Diagnóstico Kria AI.`,
+    `Acabei de fazer meu Diagnóstico Kria e quero conversar sobre as soluções indicadas para meu negócio.`,
     ``,
-    `*Nome:* ${primeiroNome}`,
-    `*Instagram:* ${d.instagram}`,
-    `*E-mail:* ${d.email}`,
-    `*Segmento:* ${d.segmento}`,
-    `*Score Kria:* ${total}/100`,
+    `👤 Nome: ${d.nome}`,
+    `📧 E-mail: ${d.email}`,
+    `📲 Instagram: ${d.instagram}`,
+    `📍 Cidade/Estado: ${d.cidade} - ${(d.estado || "").toUpperCase()}`,
+    `🏢 Segmento: ${segmentoTexto(d)}`,
+    `📊 Score Kria: ${total}/100`,
     ``,
-    `*Pacote recomendado:* ${principal.nome} — ${principal.preco}`,
+    `🎯 Meu principal objetivo:`,
+    d.objetivo90dias || "—",
     ``,
-    `*Pacotes que tenho interesse:*`,
+    `⚠️ Principal problema identificado:`,
+    d.problemaPrincipalTexto || "—",
+    ``,
+    `🧩 Pacote mais indicado:`,
+    `${principal.nome} — ${principal.preco}`,
+    ``,
+    `🛒 Pacotes que selecionei:`,
     lista,
     ``,
-    `*Objetivo (90 dias):* ${d.objetivo90dias}`,
-    `*Urgência:* ${d.urgencia}`,
-    `*Investimento previsto:* ${d.faixaInvestimento}`,
+    `💰 Total estimado:`,
+    `${formatBRL(valorTotal)} (valores podem variar conforme escopo)`,
     ``,
-    `*Principal problema relatado:*`,
-    d.problemaPrincipalTexto,
-    ``,
-    `Quero conversar sobre a melhor solução para o meu negócio. 🚀`,
+    `Quero entender qual é o melhor próximo passo para crescer com conteúdo, IA e estratégia. 🚀`,
   ].join("\n");
 }
 
 function PacoteCard({
-  pacote,
-  destaque,
-  selecionado,
-  onToggle,
-  motivo,
+  pacote, destaque, selecionado, onToggle, motivo,
 }: {
   pacote: Pacote;
   destaque?: boolean;
@@ -125,24 +136,26 @@ export default function Success({ data }: Props) {
     setSelecionadosIds((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]));
 
   const selecionados = todosPacotes.filter((p) => selecionadosIds.includes(p.id));
+  const valorTotal = useMemo(() => somarSelecionados(selecionados), [selecionados]);
 
   const continuarWhats = async () => {
     setEnviando(true);
-    const mensagem = buildMensagemWhats(data, total, rec.principal, selecionados);
-    // Envia para Formspree os pacotes selecionados antes de abrir o WhatsApp
+    const mensagem = buildMensagemWhats(data, total, rec.principal, selecionados, valorTotal);
     try {
       await fetch("https://formspree.io/f/xkoabjow", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          _subject: `🛒 Seleção de pacotes — ${data.nome} | Score ${total}`,
+          _subject: `🛒 Seleção de pacotes — ${data.nome} | Score ${total} | ${formatBRL(valorTotal)}`,
           tipoFormulario: "Diagnóstico Kria AI",
           tipo: "Seleção de pacotes após diagnóstico",
           nome: data.nome,
           whatsapp: data.whatsapp,
           email: data.email,
           instagram: data.instagram,
-          segmento: data.segmento,
+          cidade: data.cidade,
+          estado: (data.estado || "").toUpperCase(),
+          segmentos: segmentoTexto(data),
           scoreKria: total,
           classificacaoLead: classificarLead(data.urgencia),
           pontosFortes: rec.pontosFortes.join(", "),
@@ -151,10 +164,12 @@ export default function Success({ data }: Props) {
           pacotePrincipalRecomendado: `${rec.principal.nome} (${rec.principal.preco})`,
           pacotesAdicionaisExibidos: rec.adicionais.map((p) => p.nome).join(", "),
           pacotesSelecionados: selecionados.map((p) => `${p.nome} (${p.preco})`).join(", "),
+          valorTotalEstimado: formatBRL(valorTotal),
           objetivo90dias: data.objetivo90dias,
           urgencia: data.urgencia,
           faixaInvestimento: data.faixaInvestimento,
           problemaPrincipalTexto: data.problemaPrincipalTexto,
+          dataEnvio: new Date().toLocaleString("pt-BR", { timeZone: "America/Belem" }),
         }),
       });
     } catch (e) {
@@ -163,7 +178,7 @@ export default function Success({ data }: Props) {
       setEnviando(false);
       window.open(
         `https://wa.me/5591985091584?text=${encodeURIComponent(mensagem)}`,
-        "_blank"
+        "_blank",
       );
     }
   };
@@ -178,7 +193,8 @@ export default function Success({ data }: Props) {
           Seu Diagnóstico Kria está pronto, {primeiroNome}!
         </h2>
         <p className="mt-2 text-muted-foreground">
-          Analisamos suas respostas e identificamos os principais gargalos que estão limitando seu crescimento digital.
+          Com base nas suas respostas, encontramos os principais gargalos do seu negócio e selecionamos
+          as soluções mais indicadas para o seu momento.
         </p>
       </div>
 
@@ -190,7 +206,8 @@ export default function Success({ data }: Props) {
               <Sparkles className="h-3 w-3" /> Diagnóstico Kria AI
             </div>
             <div className="mt-3 text-2xl font-black md:text-3xl">{data.nome}</div>
-            <div className="text-sm text-muted-foreground">{data.instagram} · {data.segmento}</div>
+            <div className="text-sm text-muted-foreground">{data.instagram} · {segmentoTexto(data)}</div>
+            <div className="text-xs text-muted-foreground">{data.cidade} - {(data.estado || "").toUpperCase()}</div>
           </div>
           <div className="text-center">
             <div className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Score Kria</div>
@@ -273,9 +290,11 @@ export default function Success({ data }: Props) {
           </div>
         </div>
 
-        {/* Resumo da seleção */}
-        <div className="mt-6 rounded-2xl border bg-card p-5">
-          <div className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Você selecionou</div>
+        {/* Resumo da seleção + Total */}
+        <div className="mt-6 rounded-2xl border bg-card p-5 shadow-sm">
+          <div className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+            Você selecionou
+          </div>
           {selecionados.length === 0 ? (
             <p className="mt-2 text-sm text-muted-foreground">Nenhum pacote selecionado.</p>
           ) : (
@@ -288,30 +307,35 @@ export default function Success({ data }: Props) {
               ))}
             </ul>
           )}
+          <div className="mt-4 flex items-center justify-between gap-3 border-t pt-4">
+            <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+              Total estimado
+            </span>
+            <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-2xl font-black text-transparent md:text-3xl">
+              {formatBRL(valorTotal)}
+            </span>
+          </div>
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            Valores podem variar conforme escopo e complexidade. Itens com "a partir de" usam o preço base como estimativa inicial.
+          </p>
         </div>
       </div>
 
-      {/* CTAs */}
+      {/* CTA */}
       <div className="mt-8 flex flex-col items-center gap-4 text-center">
-        <div className="flex w-full flex-col gap-3 sm:flex-row sm:justify-center">
-          <button
-            type="button"
-            onClick={continuarWhats}
-            disabled={enviando}
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-500 px-7 py-4 text-base font-bold text-white shadow-xl shadow-emerald-500/30 transition hover:scale-[1.02] hover:bg-emerald-600 disabled:opacity-70"
-          >
-            <MessageCircle className="h-5 w-5" />
-            {enviando ? "Abrindo WhatsApp..." : "Continuar pelo WhatsApp"}
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={continuarWhats}
+          disabled={enviando}
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-500 px-8 py-4 text-base font-bold text-white shadow-xl shadow-emerald-500/30 ring-1 ring-emerald-300/40 transition hover:scale-[1.02] hover:bg-emerald-600 disabled:opacity-70"
+        >
+          <MessageCircle className="h-5 w-5" />
+          {enviando ? "Abrindo WhatsApp..." : "Continuar pelo WhatsApp"}
+        </button>
         <p className="text-xs text-muted-foreground">
-          Sua mensagem no WhatsApp já vai com o resumo do diagnóstico e os pacotes escolhidos.
+          Sua mensagem no WhatsApp já vai com o resumo do diagnóstico, pacotes escolhidos e total estimado.
         </p>
       </div>
     </div>
   );
-}
-
-export function buildWhatsMessage(_data: FunnelData) {
-  return "";
 }

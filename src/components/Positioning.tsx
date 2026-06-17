@@ -29,7 +29,7 @@ const SERVICES = [
 
 export default function Positioning() {
   return (
-    <section id="servicos" className="px-6 py-20 md:py-28">
+    <section id="solucoes" className="px-6 py-20 md:py-28">
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto max-w-3xl text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary">

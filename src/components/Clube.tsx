@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Check, Loader2, MessageCircle, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { waLink } from "@/lib/contact";
@@ -15,11 +16,17 @@ const BENEFITS = [
 export default function Clube() {
   const [form, setForm] = useState({
     nome: "",
-    area: "",
-    cidade: "",
-    whatsapp: "",
     email: "",
+    whatsapp: "",
+    instagram: "",
+    cidade: "",
+    estado: "",
+    area: "",
+    servicos: "",
     portfolio: "",
+    atendeClientes: "",
+    desejaReceberDemandas: "",
+    descricao: "",
   });
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
@@ -30,8 +37,11 @@ export default function Clube() {
     form.whatsapp.trim().length >= 8 &&
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
 
-  const onChange = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const setVal = (k: keyof typeof form, v: string) =>
+    setForm((f) => ({ ...f, [k]: v }));
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,12 +68,36 @@ export default function Clube() {
     }
   };
 
-  const whatsMsg =
-    "Olá! Quero ser um Kria — fazer parte da rede de parceiros da Kria AI.";
+  const whatsMsg = "Olá! Quero ser um Kria — fazer parte da rede de parceiros da Kria AI.";
+
+  const PILL = (
+    field: "atendeClientes" | "desejaReceberDemandas",
+    opts: string[],
+  ) => (
+    <div className="flex flex-wrap gap-2">
+      {opts.map((o) => {
+        const active = form[field] === o;
+        return (
+          <button
+            key={o}
+            type="button"
+            onClick={() => setVal(field, o)}
+            className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+              active
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-card hover:border-primary/50"
+            }`}
+          >
+            {o}
+          </button>
+        );
+      })}
+    </div>
+  );
 
   return (
-    <section id="clube" className="px-6 py-16 md:py-24">
-      <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2 md:items-center">
+    <section id="seja-kria" className="px-6 py-16 md:py-24">
+      <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2 md:items-start">
         <div>
           <div className="inline-flex items-center gap-2 rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent">
             Seja um Kria
@@ -73,7 +107,7 @@ export default function Clube() {
           </h2>
           <p className="mt-3 max-w-lg text-muted-foreground">
             Você é criador, agência, designer, videomaker, social media, editor, estrategista ou
-            trabalha com soluções digitais? Cadastre-se para fazer parte da nossa rede.
+            trabalha com soluções digitais? Cadastre-se para fazer parte da rede Kria AI.
           </p>
 
           <ul className="mt-6 space-y-3">
@@ -86,13 +120,6 @@ export default function Clube() {
               </li>
             ))}
           </ul>
-
-          <div className="mt-6 inline-flex items-center gap-3 rounded-2xl bg-gradient-to-br from-primary to-primary-deep px-5 py-3 text-white">
-            <div className="text-xs font-semibold uppercase tracking-widest text-white/70">
-              A partir de
-            </div>
-            <div className="text-2xl font-black">R$ 50<span className="text-sm font-bold text-white/80">/mês</span></div>
-          </div>
         </div>
 
         <div className="rounded-3xl border bg-card p-6 shadow-xl shadow-primary/5 md:p-8">
@@ -120,27 +147,51 @@ export default function Clube() {
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
                   <Label htmlFor="c-nome">Nome</Label>
-                  <Input id="c-nome" value={form.nome} onChange={onChange("nome")} className="mt-1.5" />
+                  <Input id="c-nome" value={form.nome} onChange={set("nome")} className="mt-1.5" />
                 </div>
                 <div>
-                  <Label htmlFor="c-area">Área</Label>
-                  <Input id="c-area" placeholder="Filmmaker, fotógrafo..." value={form.area} onChange={onChange("area")} className="mt-1.5" />
-                </div>
-                <div>
-                  <Label htmlFor="c-cidade">Cidade</Label>
-                  <Input id="c-cidade" value={form.cidade} onChange={onChange("cidade")} className="mt-1.5" />
+                  <Label htmlFor="c-area">Área de atuação</Label>
+                  <Input id="c-area" placeholder="Filmmaker, design, social..." value={form.area} onChange={set("area")} className="mt-1.5" />
                 </div>
                 <div>
                   <Label htmlFor="c-whatsapp">WhatsApp</Label>
-                  <Input id="c-whatsapp" placeholder="(91) 99999-9999" value={form.whatsapp} onChange={onChange("whatsapp")} className="mt-1.5" />
+                  <Input id="c-whatsapp" placeholder="(91) 99999-9999" value={form.whatsapp} onChange={set("whatsapp")} className="mt-1.5" />
                 </div>
-                <div className="sm:col-span-2">
+                <div>
                   <Label htmlFor="c-email">E-mail</Label>
-                  <Input id="c-email" type="email" value={form.email} onChange={onChange("email")} className="mt-1.5" />
+                  <Input id="c-email" type="email" value={form.email} onChange={set("email")} className="mt-1.5" />
+                </div>
+                <div>
+                  <Label htmlFor="c-ig">Instagram</Label>
+                  <Input id="c-ig" placeholder="@perfil" value={form.instagram} onChange={set("instagram")} className="mt-1.5" />
+                </div>
+                <div>
+                  <Label htmlFor="c-cidade">Cidade</Label>
+                  <Input id="c-cidade" value={form.cidade} onChange={set("cidade")} className="mt-1.5" />
+                </div>
+                <div>
+                  <Label htmlFor="c-estado">Estado (UF)</Label>
+                  <Input id="c-estado" maxLength={2} placeholder="PA" value={form.estado} onChange={set("estado")} className="mt-1.5 uppercase" />
+                </div>
+                <div>
+                  <Label htmlFor="c-port">Link do portfólio</Label>
+                  <Input id="c-port" placeholder="Instagram, Behance..." value={form.portfolio} onChange={set("portfolio")} className="mt-1.5" />
                 </div>
                 <div className="sm:col-span-2">
-                  <Label htmlFor="c-port">Portfólio (opcional)</Label>
-                  <Input id="c-port" placeholder="Link do Instagram, Behance..." value={form.portfolio} onChange={onChange("portfolio")} className="mt-1.5" />
+                  <Label htmlFor="c-servicos">Serviços que oferece</Label>
+                  <Input id="c-servicos" placeholder="Ex: edição, gravação, branding..." value={form.servicos} onChange={set("servicos")} className="mt-1.5" />
+                </div>
+                <div className="sm:col-span-2">
+                  <Label>Já atende clientes?</Label>
+                  <div className="mt-1.5">{PILL("atendeClientes", ["Sim", "Não", "Começando agora"])}</div>
+                </div>
+                <div className="sm:col-span-2">
+                  <Label>Deseja receber demandas da Kria?</Label>
+                  <div className="mt-1.5">{PILL("desejaReceberDemandas", ["Sim", "Talvez", "Não"])}</div>
+                </div>
+                <div className="sm:col-span-2">
+                  <Label htmlFor="c-desc">Breve descrição</Label>
+                  <Textarea id="c-desc" placeholder="Conta um pouco sobre você e seu trabalho..." value={form.descricao} onChange={set("descricao")} className="mt-1.5 min-h-[90px]" maxLength={500} />
                 </div>
               </div>
 
@@ -151,7 +202,7 @@ export default function Clube() {
                 className="w-full gap-2 rounded-full bg-accent font-bold text-accent-foreground hover:bg-accent/90"
               >
                 {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                {sending ? "Enviando..." : "Quero participar"}
+                {sending ? "Enviando..." : "Quero ser um Kria"}
               </Button>
 
               <a

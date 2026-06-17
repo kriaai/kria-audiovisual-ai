@@ -13,8 +13,11 @@ export type FunnelData = {
   whatsapp: string;
   email: string;
   instagram: string;
+  cidade: string;
+  estado: string;
   // Etapa 2 - Negócio
-  segmento: string;
+  segmentos: string[];
+  segmentoOutro: string;
   tempoNegocio: string;
   faturamento: string;
   // Etapa 3 - Marketing
@@ -26,15 +29,15 @@ export type FunnelData = {
   gravaVideos: string;
   equipamento: string;
   ferramentas: string[];
-  // Etapa 5 - Desafio
-  situacao: string;
+  // Etapa 5 - Desafios
+  situacoes: string[];
   // Etapa 6 - Objetivos & Aquisição & Presença
   objetivo90dias: string;
   origemClientes: string[];
   possuiSite: string;
   possuiWhatsappBusiness: string;
   // Etapa 7 - Conteúdo & Equipe
-  dificuldadeConteudo: string;
+  dificuldadesConteudo: string[];
   apareceEmVideos: string;
   criadorConteudo: string;
   // Etapa 8 - Investimento, urgência, problema
@@ -48,7 +51,10 @@ const initial: FunnelData = {
   whatsapp: "",
   email: "",
   instagram: "",
-  segmento: "",
+  cidade: "",
+  estado: "",
+  segmentos: [],
+  segmentoOutro: "",
   tempoNegocio: "",
   faturamento: "",
   canais: [],
@@ -58,12 +64,12 @@ const initial: FunnelData = {
   gravaVideos: "",
   equipamento: "",
   ferramentas: [],
-  situacao: "",
+  situacoes: [],
   objetivo90dias: "",
   origemClientes: [],
   possuiSite: "",
   possuiWhatsappBusiness: "",
-  dificuldadeConteudo: "",
+  dificuldadesConteudo: [],
   apareceEmVideos: "",
   criadorConteudo: "",
   faixaInvestimento: "",
@@ -73,13 +79,37 @@ const initial: FunnelData = {
 
 const TOTAL = 8;
 
-const SEGMENTOS: { value: string; icon: string; titulo: string; sub: string }[] = [
-  { value: "Médicos e Saúde", icon: "🏥", titulo: "Médicos e Saúde", sub: "Atrair pacientes e autoridade no digital" },
-  { value: "Políticos e Assessores", icon: "🏛️", titulo: "Políticos e Assessores", sub: "Comunicação estratégica e presença pública" },
-  { value: "Varejo e Comércio", icon: "🛍️", titulo: "Varejo e Comércio", sub: "Vender mais com conteúdo e tráfego" },
-  { value: "Influencers e Criadores", icon: "📱", titulo: "Influencers e Criadores", sub: "Crescer audiência e monetizar com IA" },
-  { value: "Eventos e Entretenimento", icon: "🎪", titulo: "Eventos e Entretenimento", sub: "Encher casa e gerar buzz nas redes" },
+const UFS = [
+  "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG",
+  "PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO",
 ];
+
+const SEGMENTOS_LIST = [
+  "Alimentação e Restaurantes",
+  "Beleza e Estética",
+  "Moda e Acessórios",
+  "Médicos e Saúde",
+  "Psicologia e Terapias",
+  "Odontologia",
+  "Educação e Cursos",
+  "Arquitetura e Interiores",
+  "Imóveis",
+  "Fitness e Bem-estar",
+  "Eventos",
+  "Fotografia e Audiovisual",
+  "Pet Shop e Veterinária",
+  "Loja Física",
+  "E-commerce",
+  "Serviços Profissionais",
+  "Consultoria",
+  "Infoprodutos",
+  "Artistas e Criadores",
+  "Turismo e Experiências",
+  "Tecnologia e Startups",
+  "Mercado Local Paraense",
+  "Outro",
+];
+
 const TEMPOS = ["Menos de 6 meses", "6 meses a 1 ano", "1 a 3 anos", "Mais de 3 anos"];
 const FATURAMENTOS = [
   "Ainda não vendo", "Até R$ 2 mil", "R$ 2 mil a R$ 5 mil",
@@ -138,30 +168,22 @@ const CRIADORES = [
   "Eu mesmo", "Funcionário", "Freelancer", "Agência", "Ninguém cria conteúdo",
 ];
 
-const SUGESTOES: Record<string, string[]> = {
-  mais: ["Mais clientes", "Mais vendas", "Mais alcance", "Mais seguidores"],
-  cli: ["Mais clientes", "Clientes recorrentes"],
-  vend: ["Mais vendas", "Aumentar ticket médio", "Vender pelo Instagram"],
-  cont: ["Conteúdo para Instagram", "Conteúdo para Reels", "Conteúdo estratégico"],
-  reel: ["Reels que vendem", "Reels virais"],
-  segu: ["Mais seguidores", "Seguidores qualificados"],
-  alca: ["Mais alcance", "Alcance orgânico"],
-  trafe: ["Tráfego pago no Instagram", "Tráfego pago no Google"],
-  marca: ["Construir marca forte", "Posicionamento de marca"],
-  temp: ["Falta de tempo para criar conteúdo", "Automatizar tarefas"],
-};
+const PROBLEMA_SUGESTOES = [
+  "Falta de tempo",
+  "Não sei o que postar",
+  "Quero atrair mais clientes",
+  "Meu Instagram está parado",
+  "Não tenho identidade visual",
+  "Já tentei anúncios e não funcionou",
+  "Quero vender mais pelo WhatsApp",
+  "Tenho vergonha de aparecer",
+  "Preciso organizar meu marketing",
+  "Quero usar IA, mas não sei como",
+];
 
-function getSugestoes(input: string): string[] {
-  const q = input.trim().toLowerCase();
-  if (q.length < 2) return [];
-  const set = new Set<string>();
-  for (const key of Object.keys(SUGESTOES)) {
-    if (key.startsWith(q.slice(0, key.length)) || q.startsWith(key.slice(0, 3))) {
-      SUGESTOES[key].forEach((s) => set.add(s));
-    }
-  }
-  return Array.from(set).slice(0, 4);
-}
+type ArrayKey =
+  | "segmentos" | "canais" | "ferramentas" | "situacoes"
+  | "origemClientes" | "dificuldadesConteudo";
 
 function Chips({ options, value, onSelect, multi = false, selected = [] }: {
   options: string[]; value?: string; onSelect: (v: string) => void;
@@ -190,10 +212,11 @@ function Chips({ options, value, onSelect, multi = false, selected = [] }: {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
   return (
     <div className="space-y-2">
       <div className="text-sm font-semibold text-foreground/90">{label}</div>
+      {hint && <div className="-mt-1 text-xs text-muted-foreground">{hint}</div>}
       {children}
     </div>
   );
@@ -215,10 +238,19 @@ export default function Funnel() {
   const update = <K extends keyof FunnelData>(key: K, value: FunnelData[K]) =>
     setData((d) => ({ ...d, [key]: value }));
 
-  const toggleArr = (key: "canais" | "ferramentas" | "origemClientes", v: string) => {
+  const toggleArr = (key: ArrayKey, v: string) => {
     setData((d) => {
-      const cur = d[key];
+      const cur = d[key] as string[];
       return { ...d, [key]: cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v] };
+    });
+  };
+
+  const appendText = (key: "problemaPrincipalTexto", v: string) => {
+    setData((d) => {
+      const cur = (d[key] as string).trim();
+      if (cur.toLowerCase().includes(v.toLowerCase())) return d;
+      const next = cur.length === 0 ? v : `${cur}. ${v}`;
+      return { ...d, [key]: next.slice(0, 500) };
     });
   };
 
@@ -231,20 +263,25 @@ export default function Funnel() {
           data.nome.trim().length >= 2 &&
           isWhats(data.whatsapp) &&
           /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim()) &&
-          data.instagram.trim().length >= 2
+          data.instagram.trim().length >= 2 &&
+          data.cidade.trim().length >= 2 &&
+          data.estado.trim().length === 2
         );
-      case 2:
-        return !!data.segmento && !!data.tempoNegocio && !!data.faturamento;
+      case 2: {
+        const segOk = data.segmentos.length > 0 &&
+          (!data.segmentos.includes("Outro") || data.segmentoOutro.trim().length >= 2);
+        return segOk && !!data.tempoNegocio && !!data.faturamento;
+      }
       case 3:
         return data.canais.length > 0 && !!data.anuncios && !!data.equipeMkt && !!data.frequenciaConteudo;
       case 4:
         return !!data.gravaVideos && !!data.equipamento && data.ferramentas.length > 0;
       case 5:
-        return !!data.situacao;
+        return data.situacoes.length > 0;
       case 6:
         return !!data.objetivo90dias && data.origemClientes.length > 0 && !!data.possuiSite && !!data.possuiWhatsappBusiness;
       case 7:
-        return !!data.dificuldadeConteudo && !!data.apareceEmVideos && !!data.criadorConteudo;
+        return data.dificuldadesConteudo.length > 0 && !!data.apareceEmVideos && !!data.criadorConteudo;
       case 8:
         return !!data.faixaInvestimento && !!data.urgencia && data.problemaPrincipalTexto.trim().length >= 3;
       default:
@@ -255,18 +292,28 @@ export default function Funnel() {
   const next = () => { if (canContinue && step < TOTAL) setStep(step + 1); };
   const back = () => step > 1 && setStep(step - 1);
 
+  const segmentoTexto = () => {
+    const base = data.segmentos.filter((s) => s !== "Outro");
+    if (data.segmentos.includes("Outro") && data.segmentoOutro.trim()) {
+      base.push(`Outro: ${data.segmentoOutro.trim()}`);
+    }
+    return base.join(", ");
+  };
+
   const submit = async () => {
     setSubmitting(true);
     const payload = {
-      _subject: `🎯 Diagnóstico Kria — ${data.nome} | ${data.segmento} | Fat: ${data.faturamento}`,
+      _subject: `🎯 Diagnóstico Kria — ${data.nome} | ${segmentoTexto()} | Fat: ${data.faturamento}`,
       tipoFormulario: "Diagnóstico Kria AI",
       "DADOS PESSOAIS": "---",
       nome: data.nome,
       whatsapp: data.whatsapp,
       email: data.email,
       instagram: data.instagram,
+      cidade: data.cidade,
+      estado: data.estado.toUpperCase(),
       "NEGÓCIO": "---",
-      segmento: data.segmento,
+      segmentos: segmentoTexto(),
       tempoNegocio: data.tempoNegocio,
       faturamento: data.faturamento,
       "MARKETING": "---",
@@ -278,15 +325,15 @@ export default function Funnel() {
       gravaVideos: data.gravaVideos,
       equipamento: data.equipamento,
       ferramentas: data.ferramentas.join(", "),
-      "DESAFIO": "---",
-      situacao: data.situacao,
+      "DESAFIOS": "---",
+      situacoes: data.situacoes.join(", "),
       "OBJETIVOS & AQUISIÇÃO": "---",
       objetivo90dias: data.objetivo90dias,
       origemClientes: data.origemClientes.join(", "),
       possuiSite: data.possuiSite,
       possuiWhatsappBusiness: data.possuiWhatsappBusiness,
       "PERFIL DE CONTEÚDO": "---",
-      dificuldadeConteudo: data.dificuldadeConteudo,
+      dificuldadesConteudo: data.dificuldadesConteudo.join(", "),
       apareceEmVideos: data.apareceEmVideos,
       criadorConteudo: data.criadorConteudo,
       "QUALIFICAÇÃO": "---",
@@ -311,8 +358,6 @@ export default function Funnel() {
     }
   };
 
-  const sugestoes = useMemo(() => getSugestoes(data.problemaPrincipalTexto), [data.problemaPrincipalTexto]);
-
   if (done) {
     return (
       <section id="funil" ref={sectionRef} className="px-6 py-16 md:py-24">
@@ -327,7 +372,7 @@ export default function Funnel() {
     2: { tag: "Sobre o negócio", h: "Conta um pouco sobre o seu negócio.", sub: "Quanto mais real, mais certeiro o diagnóstico." },
     3: { tag: "Marketing", h: "Como você atrai clientes hoje?", sub: "Sem julgamento — só pra entender o ponto de partida." },
     4: { tag: "Estrutura digital", h: "Sua estrutura de conteúdo.", sub: "Vamos ver o que você já tem em mãos." },
-    5: { tag: "Desafio principal", h: "O que mais te incomoda hoje?", sub: "É aqui que a Kria foca a estratégia." },
+    5: { tag: "Desafios", h: "O que mais te incomoda hoje?", sub: "Pode marcar mais de um — é aqui que a Kria foca a estratégia." },
     6: { tag: "Objetivos", h: "Pra onde você quer ir nos próximos 90 dias?", sub: "Isso define o tipo de plano que vamos montar." },
     7: { tag: "Conteúdo & equipe", h: "Como funciona sua produção hoje?", sub: "Entender o time muda totalmente a recomendação." },
     8: { tag: "Última etapa", h: "Pra fechar o diagnóstico.", sub: "Essas respostas personalizam a sua proposta." },
@@ -335,18 +380,34 @@ export default function Funnel() {
   const t = titulos[step];
 
   return (
-    <section id="funil" ref={sectionRef} className="px-6 py-16 md:py-24">
+    <section id="funil" ref={sectionRef} className="relative px-6 py-16 md:py-24">
       <div className="mx-auto max-w-3xl">
-        <div className="mb-8 text-center">
+        {/* Cabeçalho da seção */}
+        <div className="mb-10 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full bg-accent/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-accent">
+            <Sparkles className="h-3.5 w-3.5" /> Diagnóstico Kria AI
+          </div>
+          <h2 className="mt-3 text-3xl font-black tracking-tight md:text-5xl">
+            Responda em poucos minutos e descubra quais{" "}
+            <span className="text-accent">soluções fazem sentido</span> para o seu negócio.
+          </h2>
+          <p className="mt-3 text-sm text-muted-foreground md:text-base">
+            Nada de formulário genérico. A Kria analisa suas respostas e monta uma prescrição personalizada
+            com os pacotes mais indicados para o seu momento.
+          </p>
+        </div>
+
+        <div className="mb-6 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
             <Sparkles className="h-3.5 w-3.5" /> {t.tag} · Etapa {step} de {TOTAL}
           </div>
           <Progress value={progress} className="mt-4 h-2" />
         </div>
 
-        <div className="rounded-3xl border bg-card p-6 shadow-xl shadow-primary/5 md:p-10">
+        <div className="relative rounded-3xl border border-primary/15 bg-card p-6 shadow-xl shadow-primary/10 md:p-10">
+          <span className="pointer-events-none absolute -inset-px rounded-3xl ring-1 ring-accent/15" />
           <header className="mb-8">
-            <h2 className="text-2xl font-black tracking-tight md:text-3xl">{t.h}</h2>
+            <h3 className="text-2xl font-black tracking-tight md:text-3xl">{t.h}</h3>
             <p className="mt-1 text-sm text-muted-foreground">{t.sub}</p>
           </header>
 
@@ -368,35 +429,63 @@ export default function Funnel() {
                 <Label htmlFor="instagram">Instagram</Label>
                 <Input id="instagram" value={data.instagram} onChange={(e) => update("instagram", e.target.value)} placeholder="@seu_perfil" className="mt-1.5 h-12" maxLength={60} />
               </div>
+              <div className="grid gap-4 sm:grid-cols-[1fr_auto]">
+                <div>
+                  <Label htmlFor="cidade">Cidade</Label>
+                  <Input id="cidade" value={data.cidade} onChange={(e) => update("cidade", e.target.value)} placeholder="Belém" className="mt-1.5 h-12" maxLength={80} />
+                </div>
+                <div>
+                  <Label htmlFor="estado">Estado</Label>
+                  <select
+                    id="estado"
+                    value={data.estado}
+                    onChange={(e) => update("estado", e.target.value)}
+                    className="mt-1.5 h-12 w-full rounded-md border border-input bg-background px-3 text-sm font-semibold uppercase outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 sm:w-28"
+                  >
+                    <option value="">UF</option>
+                    {UFS.map((uf) => (
+                      <option key={uf} value={uf}>{uf}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                A localização ajuda a indicar serviços presenciais quando fizer sentido (ex.: captação de vídeo na sua região).
+              </p>
             </div>
           )}
 
           {step === 2 && (
             <div className="space-y-7">
-              <Field label="Qual é o seu segmento?">
-                <div className="grid gap-2.5 sm:grid-cols-2">
-                  {SEGMENTOS.map((s) => {
-                    const active = data.segmento === s.value;
+              <Field label="Qual é o seu segmento?" hint="Pode marcar mais de um.">
+                <div className="flex flex-wrap gap-2">
+                  {SEGMENTOS_LIST.map((seg) => {
+                    const active = data.segmentos.includes(seg);
                     return (
                       <button
-                        key={s.value}
+                        key={seg}
                         type="button"
-                        onClick={() => update("segmento", s.value)}
-                        className={`flex items-start gap-3 rounded-2xl border p-4 text-left transition ${
+                        onClick={() => toggleArr("segmentos", seg)}
+                        className={`rounded-full border px-3.5 py-2 text-xs font-semibold transition md:text-sm ${
                           active
-                            ? "border-primary bg-primary/10 shadow-md shadow-primary/10"
+                            ? "border-primary bg-primary text-primary-foreground shadow-md shadow-primary/20"
                             : "border-border bg-card hover:border-primary/50 hover:bg-primary/5"
                         }`}
                       >
-                        <span className="text-2xl leading-none">{s.icon}</span>
-                        <span className="min-w-0">
-                          <span className="block text-sm font-bold text-foreground">{s.titulo}</span>
-                          <span className="mt-0.5 block text-xs text-muted-foreground">{s.sub}</span>
-                        </span>
+                        {seg}
                       </button>
                     );
                   })}
                 </div>
+                {data.segmentos.includes("Outro") && (
+                  <Input
+                    value={data.segmentoOutro}
+                    onChange={(e) => update("segmentoOutro", e.target.value)}
+                    placeholder="Qual seu segmento?"
+                    className="mt-3 h-11"
+                    maxLength={80}
+                  />
+                )}
               </Field>
               <Field label="Há quanto tempo seu negócio existe?">
                 <Chips options={TEMPOS} value={data.tempoNegocio} onSelect={(v) => update("tempoNegocio", v)} />
@@ -409,7 +498,7 @@ export default function Funnel() {
 
           {step === 3 && (
             <div className="space-y-7">
-              <Field label="Como você consegue clientes hoje?">
+              <Field label="Quais canais você usa para divulgar seu negócio?" hint="Pode marcar mais de um.">
                 <Chips options={CANAIS} selected={data.canais} multi onSelect={(v) => toggleArr("canais", v)} />
               </Field>
               <Field label="Você já investe em anúncios?">
@@ -432,7 +521,7 @@ export default function Funnel() {
               <Field label="Qual equipamento você utiliza?">
                 <Chips options={EQUIPAMENTOS} value={data.equipamento} onSelect={(v) => update("equipamento", v)} />
               </Field>
-              <Field label="Quais ferramentas você já utiliza?">
+              <Field label="Quais ferramentas você já utiliza?" hint="Pode marcar mais de uma.">
                 <Chips options={FERRAMENTAS} selected={data.ferramentas} multi onSelect={(v) => toggleArr("ferramentas", v)} />
               </Field>
             </div>
@@ -440,8 +529,8 @@ export default function Funnel() {
 
           {step === 5 && (
             <div className="space-y-7">
-              <Field label="Qual destas situações mais parece com você?">
-                <Chips options={SITUACOES} value={data.situacao} onSelect={(v) => update("situacao", v)} />
+              <Field label="Quais destas situações mais parecem com você?" hint="Pode marcar mais de uma.">
+                <Chips options={SITUACOES} selected={data.situacoes} multi onSelect={(v) => toggleArr("situacoes", v)} />
               </Field>
             </div>
           )}
@@ -451,7 +540,7 @@ export default function Funnel() {
               <Field label="Qual seu principal objetivo nos próximos 90 dias?">
                 <Chips options={OBJETIVOS} value={data.objetivo90dias} onSelect={(v) => update("objetivo90dias", v)} />
               </Field>
-              <Field label="Como seus clientes chegam até você hoje?">
+              <Field label="Como seus clientes chegam até você hoje?" hint="Pode marcar mais de um.">
                 <Chips options={ORIGEM_CLIENTES} selected={data.origemClientes} multi onSelect={(v) => toggleArr("origemClientes", v)} />
               </Field>
               <Field label="Você possui site ou landing page?">
@@ -465,8 +554,8 @@ export default function Funnel() {
 
           {step === 7 && (
             <div className="space-y-7">
-              <Field label="Qual sua maior dificuldade ao criar conteúdo?">
-                <Chips options={DIFICULDADES} value={data.dificuldadeConteudo} onSelect={(v) => update("dificuldadeConteudo", v)} />
+              <Field label="Quais suas maiores dificuldades ao criar conteúdo?" hint="Pode marcar mais de uma.">
+                <Chips options={DIFICULDADES} selected={data.dificuldadesConteudo} multi onSelect={(v) => toggleArr("dificuldadesConteudo", v)} />
               </Field>
               <Field label="Você estaria disposto(a) a aparecer em vídeos?">
                 <Chips options={APARECE_VIDEOS} value={data.apareceEmVideos} onSelect={(v) => update("apareceEmVideos", v)} />
@@ -485,28 +574,29 @@ export default function Funnel() {
               <Field label="Quando você pretende resolver esse problema?">
                 <Chips options={URGENCIAS} value={data.urgencia} onSelect={(v) => update("urgencia", v)} />
               </Field>
-              <Field label="Se a Kria pudesse resolver apenas um problema do seu negócio agora, qual seria?">
+              <Field
+                label="Se a Kria pudesse resolver apenas um problema do seu negócio agora, qual seria?"
+                hint="Clique nas sugestões para adicionar — você também pode escrever livremente."
+              >
                 <Textarea
                   value={data.problemaPrincipalTexto}
                   onChange={(e) => update("problemaPrincipalTexto", e.target.value)}
                   placeholder="Conta com suas palavras o que mais te incomoda hoje..."
-                  className="min-h-[110px]"
+                  className="min-h-[120px]"
                   maxLength={500}
                 />
-                {sugestoes.length > 0 && (
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {sugestoes.map((s) => (
-                      <button
-                        key={s}
-                        type="button"
-                        onClick={() => update("problemaPrincipalTexto", s)}
-                        className="rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary hover:bg-primary/10"
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {PROBLEMA_SUGESTOES.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => appendText("problemaPrincipalTexto", s)}
+                      className="rounded-full border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-semibold text-primary transition hover:bg-primary/10"
+                    >
+                      + {s}
+                    </button>
+                  ))}
+                </div>
               </Field>
             </div>
           )}
