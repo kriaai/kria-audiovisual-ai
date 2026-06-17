@@ -1,6 +1,6 @@
 import { Check, MessageCircle, FileText, Sparkles } from "lucide-react";
 import type { FunnelData } from "./Funnel";
-import { waLink } from "@/lib/contact";
+import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 

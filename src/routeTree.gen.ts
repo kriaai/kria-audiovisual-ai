@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as DiagnosticoPdfRouteImport } from './routes/diagnostico-pdf'
 import { Route as ClubeRouteImport } from './routes/clube'
 import { Route as IndexRouteImport } from './routes/index'
 
+const DiagnosticoPdfRoute = DiagnosticoPdfRouteImport.update({
+  id: '/diagnostico-pdf',
+  path: '/diagnostico-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ClubeRoute = ClubeRouteImport.update({
   id: '/clube',
   path: '/clube',
@@ -26,31 +32,42 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/clube': typeof ClubeRoute
+  '/diagnostico-pdf': typeof DiagnosticoPdfRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/clube': typeof ClubeRoute
+  '/diagnostico-pdf': typeof DiagnosticoPdfRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/clube': typeof ClubeRoute
+  '/diagnostico-pdf': typeof DiagnosticoPdfRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/clube'
+  fullPaths: '/' | '/clube' | '/diagnostico-pdf'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/clube'
-  id: '__root__' | '/' | '/clube'
+  to: '/' | '/clube' | '/diagnostico-pdf'
+  id: '__root__' | '/' | '/clube' | '/diagnostico-pdf'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ClubeRoute: typeof ClubeRoute
+  DiagnosticoPdfRoute: typeof DiagnosticoPdfRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/diagnostico-pdf': {
+      id: '/diagnostico-pdf'
+      path: '/diagnostico-pdf'
+      fullPath: '/diagnostico-pdf'
+      preLoaderRoute: typeof DiagnosticoPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/clube': {
       id: '/clube'
       path: '/clube'
@@ -71,17 +88,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ClubeRoute: ClubeRoute,
+  DiagnosticoPdfRoute: DiagnosticoPdfRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
