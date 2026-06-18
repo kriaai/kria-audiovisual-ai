@@ -1,132 +1,341 @@
-import { CheckCircle2, MessageCircle, Sparkles, Target, TrendingUp, Package, ArrowRight } from "lucide-react";
+import { Check, MessageCircle, Sparkles, Star, TrendingUp, AlertTriangle, Lightbulb } from "lucide-react";
 import type { FunnelData } from "./Funnel";
-import type { Recomendacao } from "@/lib/recommend";
-import { openWhatsApp } from "@/lib/contact";
+import { useMemo, useState } from "react";
+import {
+  calcScores, scoreKria, recomendar, classificarLead,
+  somarSelecionados, formatBRL, type Pacote,
+} from "./packages";
 
-type Props = { data: FunnelData; recomendacao: Recomendacao };
+type Props = { data: FunnelData };
 
-export default function Success({ data, recomendacao }: Props) {
-  const first = data.nome.split(" ")[0] || data.nome;
-  const servicosTxt = recomendacao.servicos.join(", ");
-
-  const msgEnviar = [
-    `Olá, Kria! Fiz o diagnóstico no site.`,
-    `Nome: ${data.nome}`,
-    `Perfil: ${data.perfil}`,
-    `Objetivo: ${data.objetivo}`,
-    `Maior bloqueio: ${data.bloqueio.join(", ")}`,
-    `Pacote recomendado: ${recomendacao.pacote}`,
-    `Serviços indicados: ${servicosTxt}`,
-    `Quero uma avaliação do meu negócio.`,
-  ].join("\n");
-
-  const msgPacote = `Olá, Kria! Meu diagnóstico indicou o ${recomendacao.pacote}. Quero entender como funciona.`;
-  const msgConsultoria = `Olá, Kria! Quero agendar uma consultoria para avaliar meu negócio.`;
-
+function Bar({ label, value }: { label: string; value: number }) {
   return (
-    <div className="mx-auto max-w-3xl">
-      <div className="text-center">
-        <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30">
-          <CheckCircle2 className="h-7 w-7" />
-        </div>
-        <h2 className="mt-5 text-3xl font-black tracking-tight text-white md:text-4xl">
-          Seu Diagnóstico Kria está pronto, {first}!
-        </h2>
-        <p className="mt-2 text-sm text-[#B8AFC8] md:text-base">
-          Seu diagnóstico foi gerado. Agora você pode falar com a Kria no WhatsApp
-          e receber uma avaliação mais certeira.
-        </p>
+    <div>
+      <div className="mb-1 flex items-center justify-between text-sm">
+        <span className="font-semibold text-foreground/90">{label}</span>
+        <span className="font-bold text-primary">{value}%</span>
       </div>
-
-      {/* Mini relatório */}
-      <div className="mt-8 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md md:p-8">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-[#A855F7]/15 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#C9A6FF]">
-              <Sparkles className="h-3 w-3" /> Relatório Kria AI
-            </div>
-            <div className="mt-3 text-xl font-black text-white md:text-2xl">{data.nome}</div>
-            <div className="text-xs text-[#B8AFC8]">
-              {data.instagram} · {data.cidade} - {data.estado.toUpperCase()}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-6 grid gap-3 md:grid-cols-2">
-          <InfoBlock label="Perfil" value={data.perfil} accent="#A855F7" />
-          <InfoBlock label="Objetivo principal" value={data.objetivo} accent="#A855F7" />
-          <InfoBlock label="Principal gargalo" value={recomendacao.gargalo} accent="#FF6A2C" icon={Target} />
-          <InfoBlock label="Potencial" value={recomendacao.potencial} accent="#FF6A2C" icon={TrendingUp} />
-        </div>
-
-        <div className="mt-6 rounded-2xl border border-[#FF6A2C]/30 bg-gradient-to-br from-[#FF6A2C]/10 to-[#A855F7]/[0.05] p-5">
-          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#FF8A3D]">
-            <Package className="h-3.5 w-3.5" /> Pacote recomendado
-          </div>
-          <div className="mt-2 text-lg font-black text-white md:text-xl">{recomendacao.pacote}</div>
-          <p className="mt-1 text-sm text-[#B8AFC8]">{recomendacao.pacoteDescricao}</p>
-        </div>
-
-        <div className="mt-4 rounded-2xl border border-white/10 bg-[#07030F]/40 p-5">
-          <div className="text-[11px] font-bold uppercase tracking-widest text-[#C9A6FF]">
-            Serviços indicados
-          </div>
-          <ul className="mt-2 flex flex-wrap gap-2">
-            {recomendacao.servicos.map((s) => (
-              <li key={s} className="rounded-full border border-white/15 bg-white/[0.05] px-3 py-1 text-xs font-semibold text-white">
-                {s}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="mt-4 rounded-2xl border border-emerald-400/25 bg-emerald-400/[0.06] p-5">
-          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-emerald-300">
-            <ArrowRight className="h-3.5 w-3.5" /> Próximo passo
-          </div>
-          <p className="mt-2 text-sm text-white">{recomendacao.proximoPasso}</p>
-        </div>
-      </div>
-
-      {/* CTAs */}
-      <div className="mt-8 grid gap-3">
-        <button
-          onClick={() => openWhatsApp(msgEnviar)}
-          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#FF6A2C] px-6 text-sm font-bold text-white shadow-lg shadow-[#FF6A2C]/25 transition hover:bg-[#FF8A3D]"
-        >
-          <MessageCircle className="h-4 w-4" />
-          Enviar meu diagnóstico para a Kria no WhatsApp
-        </button>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <button
-            onClick={() => openWhatsApp(msgPacote)}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
-          >
-            Quero o pacote recomendado
-          </button>
-          <button
-            onClick={() => openWhatsApp(msgConsultoria)}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
-          >
-            Prefiro uma consultoria
-          </button>
-        </div>
+      <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-primary to-accent transition-all"
+          style={{ width: `${value}%` }}
+        />
       </div>
     </div>
   );
 }
 
-function InfoBlock({
-  label, value, accent, icon: Icon,
+function segmentoTexto(d: FunnelData): string {
+  const base = (d.segmentos || []).filter((s) => s !== "Outro");
+  if ((d.segmentos || []).includes("Outro") && d.segmentoOutro?.trim()) {
+    base.push(`Outro: ${d.segmentoOutro.trim()}`);
+  }
+  return base.join(" · ") || "—";
+}
+
+function buildMensagemWhats(
+  d: FunnelData,
+  total: number,
+  principal: Pacote,
+  selecionados: Pacote[],
+  valorTotal: number,
+): string {
+  const lista = selecionados.length > 0
+    ? selecionados.map((p) => `• ${p.nome} — ${p.preco}`).join("\n")
+    : "• (nenhum selecionado ainda)";
+
+  return [
+    `Olá, Kria AI! ✨`,
+    ``,
+    `Acabei de fazer meu Diagnóstico Kria e quero conversar sobre as soluções indicadas para meu negócio.`,
+    ``,
+    `👤 Nome: ${d.nome}`,
+    `📧 E-mail: ${d.email}`,
+    `📲 Instagram: ${d.instagram}`,
+    `📍 Cidade/Estado: ${d.cidade} - ${(d.estado || "").toUpperCase()}`,
+    `🏢 Segmento: ${segmentoTexto(d)}`,
+    `📊 Score Kria: ${total}/100`,
+    ``,
+    `🎯 Meu principal objetivo:`,
+    d.objetivo90dias || "—",
+    ``,
+    `⚠️ Principal problema identificado:`,
+    d.problemaPrincipalTexto || "—",
+    ``,
+    `🧩 Pacote mais indicado:`,
+    `${principal.nome} — ${principal.preco}`,
+    ``,
+    `🛒 Pacotes que selecionei:`,
+    lista,
+    ``,
+    `💰 Total estimado:`,
+    `${formatBRL(valorTotal)} (valores podem variar conforme escopo)`,
+    ``,
+    `Quero entender qual é o melhor próximo passo para crescer com conteúdo, IA e estratégia. 🚀`,
+  ].join("\n");
+}
+
+function PacoteCard({
+  pacote, destaque, selecionado, onToggle, motivo,
 }: {
-  label: string; value: string; accent: string; icon?: typeof Target;
+  pacote: Pacote;
+  destaque?: boolean;
+  selecionado: boolean;
+  onToggle: () => void;
+  motivo?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#07030F]/40 p-4">
-      <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest" style={{ color: accent }}>
-        {Icon && <Icon className="h-3 w-3" />} {label}
+    <button
+      type="button"
+      onClick={onToggle}
+      className={`relative w-full rounded-2xl border p-5 text-left transition ${
+        destaque
+          ? "border-primary bg-gradient-to-br from-primary/10 via-card to-accent/10 shadow-xl shadow-primary/15"
+          : "border-border bg-card hover:border-primary/40"
+      } ${selecionado ? "ring-2 ring-primary" : ""}`}
+    >
+      {destaque && (
+        <div className="absolute -top-3 left-5 inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1 text-[11px] font-black uppercase tracking-widest text-accent-foreground shadow-md">
+          <Star className="h-3 w-3" /> Mais indicado para você
+        </div>
+      )}
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className={`font-black ${destaque ? "text-lg md:text-xl" : "text-base"}`}>{pacote.nome}</div>
+          <div className="mt-0.5 text-sm font-bold text-primary">{pacote.preco}</div>
+        </div>
+        <div
+          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 transition ${
+            selecionado ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background"
+          }`}
+        >
+          {selecionado && <Check className="h-4 w-4" strokeWidth={3} />}
+        </div>
       </div>
-      <div className="mt-1.5 text-sm font-semibold text-white">{value}</div>
+      <p className="mt-2 text-sm text-muted-foreground">{pacote.descricao}</p>
+      {motivo && (
+        <div className="mt-3 rounded-xl bg-primary/10 px-3 py-2 text-xs font-semibold text-primary">
+          {motivo}
+        </div>
+      )}
+    </button>
+  );
+}
+
+export default function Success({ data }: Props) {
+  const scores = useMemo(() => calcScores(data), [data]);
+  const total = useMemo(() => scoreKria(scores), [scores]);
+  const rec = useMemo(() => recomendar(data, scores), [data, scores]);
+  const primeiroNome = data.nome.split(" ")[0] || data.nome;
+
+  const todosPacotes = useMemo(() => [rec.principal, ...rec.adicionais], [rec]);
+  const [selecionadosIds, setSelecionadosIds] = useState<string[]>([rec.principal.id]);
+  const [enviando, setEnviando] = useState(false);
+
+  const toggle = (id: string) =>
+    setSelecionadosIds((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]));
+
+  const selecionados = todosPacotes.filter((p) => selecionadosIds.includes(p.id));
+  const valorTotal = useMemo(() => somarSelecionados(selecionados), [selecionados]);
+
+  const continuarWhats = async () => {
+    setEnviando(true);
+    const mensagem = buildMensagemWhats(data, total, rec.principal, selecionados, valorTotal);
+    try {
+      await fetch("https://formspree.io/f/xkoabjow", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          _subject: `🛒 Seleção de pacotes — ${data.nome} | Score ${total} | ${formatBRL(valorTotal)}`,
+          tipoFormulario: "Diagnóstico Kria AI",
+          tipo: "Seleção de pacotes após diagnóstico",
+          nome: data.nome,
+          whatsapp: data.whatsapp,
+          email: data.email,
+          instagram: data.instagram,
+          cidade: data.cidade,
+          estado: (data.estado || "").toUpperCase(),
+          segmentos: segmentoTexto(data),
+          scoreKria: total,
+          classificacaoLead: classificarLead(data.urgencia),
+          pontosFortes: rec.pontosFortes.join(", "),
+          gargalos: rec.gargalos.join(", "),
+          oportunidades: rec.oportunidades.join(" | "),
+          pacotePrincipalRecomendado: `${rec.principal.nome} (${rec.principal.preco})`,
+          pacotesAdicionaisExibidos: rec.adicionais.map((p) => p.nome).join(", "),
+          pacotesSelecionados: selecionados.map((p) => `${p.nome} (${p.preco})`).join(", "),
+          valorTotalEstimado: formatBRL(valorTotal),
+          objetivo90dias: data.objetivo90dias,
+          urgencia: data.urgencia,
+          faixaInvestimento: data.faixaInvestimento,
+          problemaPrincipalTexto: data.problemaPrincipalTexto,
+          dataEnvio: new Date().toLocaleString("pt-BR", { timeZone: "America/Belem" }),
+        }),
+      });
+    } catch (e) {
+      console.error("Erro ao enviar seleção ao Formspree:", e);
+    } finally {
+      setEnviando(false);
+      window.open(
+        `https://wa.me/5591985091584?text=${encodeURIComponent(mensagem)}`,
+        "_blank",
+      );
+    }
+  };
+
+  return (
+    <div className="mx-auto max-w-3xl">
+      <div className="text-center">
+        <div className="mx-auto inline-flex animate-check items-center justify-center rounded-full bg-success p-5 text-success-foreground shadow-xl shadow-success/30">
+          <Check className="h-10 w-10" strokeWidth={3} />
+        </div>
+        <h2 className="mt-6 text-3xl font-black tracking-tight md:text-4xl">
+          Seu Diagnóstico Kria está pronto, {primeiroNome}!
+        </h2>
+        <p className="mt-2 text-muted-foreground">
+          Com base nas suas respostas, encontramos os principais gargalos do seu negócio e selecionamos
+          as soluções mais indicadas para o seu momento.
+        </p>
+      </div>
+
+      {/* CARD VISUAL */}
+      <div className="mt-8 overflow-hidden rounded-3xl border bg-gradient-to-br from-primary/10 via-card to-accent/10 p-7 shadow-xl shadow-primary/10 md:p-10">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary">
+              <Sparkles className="h-3 w-3" /> Diagnóstico Kria AI
+            </div>
+            <div className="mt-3 text-2xl font-black md:text-3xl">{data.nome}</div>
+            <div className="text-sm text-muted-foreground">{data.instagram} · {segmentoTexto(data)}</div>
+            <div className="text-xs text-muted-foreground">{data.cidade} - {(data.estado || "").toUpperCase()}</div>
+          </div>
+          <div className="text-center">
+            <div className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Score Kria</div>
+            <div className="bg-gradient-to-br from-primary to-accent bg-clip-text text-5xl font-black leading-none text-transparent md:text-6xl">
+              {total}
+            </div>
+            <div className="text-xs font-semibold text-muted-foreground">de 100</div>
+          </div>
+        </div>
+
+        <div className="mt-7 grid gap-3">
+          <Bar label="Conteúdo" value={scores.conteudo} />
+          <Bar label="Autoridade" value={scores.autoridade} />
+          <Bar label="Presença Digital" value={scores.presencaDigital} />
+          <Bar label="Estrutura" value={scores.estrutura} />
+          <Bar label="Aquisição de Clientes" value={scores.aquisicao} />
+        </div>
+
+        <div className="mt-7 grid gap-3 md:grid-cols-3">
+          <div className="rounded-2xl border border-success/30 bg-success/5 p-4">
+            <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-success">
+              <TrendingUp className="h-3 w-3" /> Pontos fortes
+            </div>
+            <ul className="mt-2 space-y-1 text-sm font-semibold text-foreground/90">
+              {rec.pontosFortes.length > 0
+                ? rec.pontosFortes.map((p) => <li key={p}>• {p}</li>)
+                : <li className="text-muted-foreground">A construir 💪</li>}
+            </ul>
+          </div>
+          <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-4">
+            <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-destructive">
+              <AlertTriangle className="h-3 w-3" /> Gargalos
+            </div>
+            <ul className="mt-2 space-y-1 text-sm font-semibold text-foreground/90">
+              {rec.gargalos.length > 0
+                ? rec.gargalos.map((p) => <li key={p}>• {p}</li>)
+                : <li className="text-muted-foreground">Nenhum crítico</li>}
+            </ul>
+          </div>
+          <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4">
+            <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-primary">
+              <Lightbulb className="h-3 w-3" /> Oportunidades
+            </div>
+            <ul className="mt-2 space-y-1 text-sm font-semibold text-foreground/90">
+              {rec.oportunidades.map((p) => <li key={p}>• {p}</li>)}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* RECOMENDAÇÕES DE PACOTES */}
+      <div className="mt-10">
+        <div className="text-center">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-accent">
+            <Sparkles className="h-3 w-3" /> Plano recomendado
+          </div>
+          <h3 className="mt-3 text-2xl font-black md:text-3xl">A prescrição da Kria para o seu momento</h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Selecione um ou mais pacotes para conversar com a nossa equipe.
+          </p>
+        </div>
+
+        <div className="mt-6 space-y-3">
+          <PacoteCard
+            pacote={rec.principal}
+            destaque
+            selecionado={selecionadosIds.includes(rec.principal.id)}
+            onToggle={() => toggle(rec.principal.id)}
+            motivo={rec.motivo}
+          />
+          <div className="grid gap-3 sm:grid-cols-2">
+            {rec.adicionais.map((p) => (
+              <PacoteCard
+                key={p.id}
+                pacote={p}
+                selecionado={selecionadosIds.includes(p.id)}
+                onToggle={() => toggle(p.id)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Resumo da seleção + Total */}
+        <div className="mt-6 rounded-2xl border bg-card p-5 shadow-sm">
+          <div className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+            Você selecionou
+          </div>
+          {selecionados.length === 0 ? (
+            <p className="mt-2 text-sm text-muted-foreground">Nenhum pacote selecionado.</p>
+          ) : (
+            <ul className="mt-2 space-y-1">
+              {selecionados.map((p) => (
+                <li key={p.id} className="flex items-center justify-between gap-3 text-sm">
+                  <span className="font-semibold text-foreground/90">{p.nome}</span>
+                  <span className="font-bold text-primary">{p.preco}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          <div className="mt-4 flex items-center justify-between gap-3 border-t pt-4">
+            <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+              Total estimado
+            </span>
+            <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-2xl font-black text-transparent md:text-3xl">
+              {formatBRL(valorTotal)}
+            </span>
+          </div>
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            Valores podem variar conforme escopo e complexidade. Itens com "a partir de" usam o preço base como estimativa inicial.
+          </p>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div className="mt-8 flex flex-col items-center gap-4 text-center">
+        <button
+          type="button"
+          onClick={continuarWhats}
+          disabled={enviando}
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-500 px-8 py-4 text-base font-bold text-white shadow-xl shadow-emerald-500/30 ring-1 ring-emerald-300/40 transition hover:scale-[1.02] hover:bg-emerald-600 disabled:opacity-70"
+        >
+          <MessageCircle className="h-5 w-5" />
+          {enviando ? "Abrindo WhatsApp..." : "Continuar pelo WhatsApp"}
+        </button>
+        <p className="text-xs text-muted-foreground">
+          Sua mensagem no WhatsApp já vai com o resumo do diagnóstico, pacotes escolhidos e total estimado.
+        </p>
+      </div>
     </div>
   );
 }
